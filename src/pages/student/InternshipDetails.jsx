@@ -12,7 +12,7 @@ const InternshipDetails = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [startupData, setStartupData] = useState(null);
+  // const [startupData, setStartupData] = useState(null);
 
   useEffect(() => {
     fetchDetails();
@@ -22,9 +22,10 @@ const InternshipDetails = () => {
     try {
       const res = await api.get(`/student/internship/get-internship/${id}`);
       setData(res.data);
-      const startupId = data.startupId
-      const startupRes = await api.get(`/student/internship/get-startup-details/${startupId}`);
-    setStartupData(startupRes);
+    
+      
+      // alert(data.stripend)
+    // setStartupData(startupRes);
     } catch (err) {
       console.error(err);
     } finally {
@@ -60,7 +61,7 @@ const InternshipDetails = () => {
               <div>
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight">{data.title}</h1>
                 <p className="text-indigo-600 font-bold mt-1 flex items-center gap-2 italic">
-                  at  {startupData}<Globe size={14} className="not-italic opacity-50" />
+                  at {data.startupId.name} <Globe size={14} className="not-italic opacity-50" />
                 </p>
               </div>
             </div>

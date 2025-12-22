@@ -19,6 +19,7 @@ import StartupLogin from '../pages/Auth/StartupLogin';
 import StudentLogin from '../pages/Auth/StudentLogin';
 import AdminLogin from '../pages/Auth/AdminLogin';
 import StudentRegister from '../pages/Auth/StudentRegister'
+import StudentApplications from '../pages/student/StudentApplications';
 
 
 
@@ -49,9 +50,9 @@ const AppRoutes = () => {
                   <Route path="/student/dashboard" element={<StudentDashboard/>} />
                   <Route path="/student/internships" element={<StudentInternships />} />
                   <Route path="/student/internships/:id" element={<InternshipDetails />} />
-                  {/* 
+                  
                   <Route path="/student/applications" element={<StudentApplications />} />
-                  <Route path="/student/certificates" element={<StudentCertificates />} />*/}
+              
                   <Route path="/student/profile" element={<StudentProfile />} /> 
                 </Route>
             </Route>
