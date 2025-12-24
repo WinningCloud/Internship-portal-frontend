@@ -1,24 +1,54 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // 👈 FIXED: Added missing import
+import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, 
   Briefcase, 
   PlusCircle, 
   UserCircle, 
   LogOut, 
-  Sparkles 
+  Building2,
+  ShieldCheck
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
+import api from '../../api/axiosConfig';
+
+// Import the logo from your assets folder
+import ciicLogo from '../../assets/ciic.png'; 
 
 const StartupSidebar = () => {
   const { logout, user } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Dynamic user data from context
-  const companyName = user?.name || "Startup Admin";
-  const companyEmail = user?.email || "farhantech@gmail.com";
+  const [profile, setProfile] = useState({
+    companyName: "Loading...",
+    logoUrl: null,
+    isVerified: true,
+    email: ""
+  });
+
+  useEffect(() => {
+    const fetchSidebarData = async () => {
+      if (!user?._id) return;
+      try {
+        const res = await api.get(`/startup/profile/get-profile/${user._id}`);
+        const data = res.data.profile || res.data;
+        if (data) {
+          setProfile({
+            companyName: data.companyName,
+            logoUrl: data.logoUrl,
+            isVerified: true,
+            email: data.companyEmail
+          });
+        }
+      } catch (err) {
+        console.error("Sidebar profile fetch error");
+      }
+    };
+
+    fetchSidebarData();
+  }, [user?._id]);
 
   const menuItems = [
     { name: 'Dashboard', path: '/startup/dashboard', icon: LayoutDashboard },
@@ -35,25 +65,23 @@ const StartupSidebar = () => {
   return (
     <div className="h-screen w-72 bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0 z-50 font-sans">
       
-      {/* 1. Brand Section - High Contrast Minimal */}
-      <div className="p-8 mb-4">
+      {/* 1. New Brand Section - Centered Image Logo */}
+      <div className="p-8 pb-4 flex justify-center">
         <div 
-          className="flex items-center gap-3 group cursor-pointer" 
+          className="cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" 
           onClick={() => navigate('/startup/dashboard')}
         >
-          <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-sm group-hover:bg-blue-600 transition-all duration-300">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-none uppercase">CIIC</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Startup Hub</p>
-          </div>
+          <img 
+            src={ciicLogo} 
+            alt="CIIC Logo" 
+            className="h-16 w-auto object-contain" 
+          />
         </div>
       </div>
 
       {/* 2. Navigation Menu */}
-      <div className="flex-1 px-4 overflow-y-auto">
-        <p className="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Management</p>
+      <div className="flex-1 px-4 overflow-y-auto custom-scrollbar mt-4">
+        <p className="px-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Management</p>
         
         <nav className="space-y-1">
           {menuItems.map((item) => {
@@ -64,7 +92,7 @@ const StartupSidebar = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`group relative flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 ${
+                className={`group relative flex items-center justify-between px-5 py-3.5 rounded-xl transition-all duration-200 ${
                   isActive 
                   ? 'bg-blue-50 text-blue-700' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -77,12 +105,10 @@ const StartupSidebar = () => {
                   </span>
                 </div>
 
-                {/* Animated Active Indicator */}
                 {isActive && (
                   <motion.div 
                     layoutId="sidebar-active-indicator"
                     className="w-1 h-5 bg-blue-600 rounded-full absolute right-2"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
               </Link>
@@ -91,30 +117,43 @@ const StartupSidebar = () => {
         </nav>
       </div>
 
-      {/* 3. Integrated User Section */}
+      {/* 3. Dynamic Startup Identity Section */}
       <div className="p-4 mt-auto border-t border-slate-100 bg-slate-50/50">
         
-        {/* Dynamic User Info Card */}
-        <div className="flex items-center gap-3 p-3 mb-3 bg-white border border-slate-200 rounded-2xl shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
-            <UserCircle className="w-6 h-6 text-slate-400" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[13px] font-bold text-slate-900 truncate tracking-tight">{companyName}</p>
-            <p className="text-[11px] text-slate-400 truncate font-medium">{companyEmail}</p>
-          </div>
+        <div className="px-3 mb-4">
+            <div className="flex items-center gap-2 text-blue-600 font-bold text-[9px] uppercase tracking-[0.2em] mb-3">
+                <ShieldCheck size={12} /> Partner Verified
+            </div>
+            
+            <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
+                {profile.logoUrl ? (
+                    <img src={profile.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                ) : (
+                    <Building2 className="w-5 h-5 text-slate-300" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="text-[13px] font-bold text-slate-900 truncate tracking-tight">
+                    {profile.companyName || "Configure Profile"}
+                </p>
+                <p className="text-[10px] text-slate-400 truncate font-medium">
+                    {profile.email || "No Email Set"}
+                </p>
+              </div>
+            </div>
         </div>
 
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 p-3 rounded-xl text-slate-600 font-bold text-[12px] uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all active:scale-95 border border-transparent hover:border-red-100"
+          className="w-full flex items-center justify-center gap-2 p-3 rounded-xl text-slate-500 font-bold text-[12px] uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all active:scale-95 border border-transparent hover:border-red-100"
         >
           <LogOut size={16} />
-          <span>Sign Out</span>
+          <span>Terminate Session</span>
         </button>
 
-        <p className="text-[10px] text-center text-slate-300 mt-4 font-bold tracking-widest uppercase">
-          © 2025 CIIC Council
+        <p className="text-[9px] text-center text-slate-300 mt-4 font-bold tracking-widest uppercase">
+          CIIC Portal v2.4.0
         </p>
       </div>
     </div>
