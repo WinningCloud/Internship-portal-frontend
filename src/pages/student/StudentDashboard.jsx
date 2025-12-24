@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,22 +15,29 @@ import {
   Filter,
   Briefcase,
   Zap,
-  Globe
+  Globe,
+  CheckCircle,
+  Eye,
+  Info
 } from "lucide-react";
 
 import api from "../../api/axiosConfig.js";
 import { useDomains } from "../../context/DomainContext.jsx";
+import { AuthContext } from "../../context/AuthContext"; 
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const { domains, loading: domainsLoading } = useDomains();
+  
+  // Access User Data. Using fallback for name to ensure it is ALWAYS visible
+  const { user } = useContext(AuthContext);
+  const studentName = user?.fullName || user?.name || "Student";
 
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDomain, setActiveDomain] = useState("ALL");
 
-  // Dynamic Greeting Logic
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
@@ -38,7 +45,6 @@ const StudentDashboard = () => {
     return "Good Evening";
   }, []);
 
-  /* ---------------- FETCH INTERNSHIPS ---------------- */
   useEffect(() => {
     const fetchInternships = async () => {
       try {
@@ -53,7 +59,6 @@ const StudentDashboard = () => {
     fetchInternships();
   }, []);
 
-  /* ---------------- FILTER LOGIC ---------------- */
   const filteredInternships = useMemo(() => {
     return internships.filter((job) => {
       const matchesDomain = activeDomain === "ALL" || job.domain === activeDomain;
@@ -66,99 +71,90 @@ const StudentDashboard = () => {
 
   if (loading || domainsLoading) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center space-y-6">
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-50">
         <div className="relative">
-          <Loader2 className="w-16 h-16 text-indigo-600 animate-spin" />
+          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin" />
           <div className="absolute inset-0 blur-2xl bg-indigo-400/20 animate-pulse"></div>
         </div>
-        <p className="text-slate-500 font-bold uppercase tracking-[0.3em] text-[10px]">Syncing Opportunities</p>
+        <p className="mt-4 text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">Syncing Opportunities</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-[1440px] mx-auto pb-20 px-4 md:px-10">
+    <div className="w-full max-w-[1600px] mx-auto pb-20 px-4 md:px-8">
       
-      {/* ---------------- 1. DYNAMIC HERO SECTION ---------------- */}
+      {/* ---------------- 1. OPTIMIZED SMALLER HERO SECTION ---------------- */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative w-full bg-[#0a0a0a] rounded-[3rem] p-10 md:p-16 mb-12 flex flex-col md:flex-row items-center justify-between overflow-hidden shadow-2xl"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative w-full min-h-[280px] bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#020617] rounded-[2.5rem] p-10 md:p-14 mb-10 flex flex-col md:flex-row items-center justify-between overflow-hidden shadow-2xl border border-white/10"
       >
-        {/* Animated Background Blobs */}
-        <div className="absolute top-[-20%] left-[-10%] w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-96 h-96 bg-rose-600/10 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[-10%] right-[-5%] w-72 h-72 bg-indigo-500/20 rounded-full blur-[80px] animate-pulse"></div>
 
-        <div className="relative z-10 space-y-6 max-w-2xl text-center md:text-left">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em]">
-            <Sparkles size={14} className="animate-bounce" /> {greeting}, Student
+        <div className="relative z-10 space-y-5 max-w-2xl text-center md:text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/5 text-indigo-300 text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-md">
+            <Sparkles size={12} className="text-indigo-400" /> {greeting}
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[0.9]">
-            Propel Your Career <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-400 to-slate-600 italic font-light">
-              at CIIC Startups
+          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none">
+            Welcome, <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-fuchsia-300 italic">
+              {studentName}!
             </span>
           </h1>
-          <p className="text-slate-400 font-medium text-lg leading-relaxed">
-            Discover {internships.length}+ exclusive internship opportunities. Apply today and build the future.
+          <p className="text-slate-300 font-medium text-base leading-relaxed opacity-80">
+            Explore {internships.length} exclusive career-start opportunities matching your profile.
           </p>
         </div>
 
-        <motion.div 
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="relative z-10 hidden lg:block"
-        >
-          <img
+        <div className="relative z-10 hidden lg:block pr-10">
+          <motion.img
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             src="https://illustrations.popsy.co/white/remote-work.svg"
             alt="Work"
-            className="w-80 h-80 brightness-[1.1] drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+            className="w-[380px] brightness-125 drop-shadow-[0_15px_40px_rgba(79,70,229,0.4)]"
           />
-        </motion.div>
+        </div>
       </motion.div>
 
-      {/* ---------------- 2. QUICK STATS ---------------- */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          <QuickStat icon={Briefcase} label="Total Roles" value={internships.length} color="text-indigo-600" />
-          <QuickStat icon={Zap} label="New Today" value="4" color="text-amber-500" />
-          <QuickStat icon={Globe} label="Active Domains" value={domains.length} color="text-emerald-500" />
-          <QuickStat icon={ArrowUpRight} label="Avg. Stipend" value="₹8k" color="text-rose-500" />
+      {/* ---------------- 2. STATS OVERVIEW ---------------- */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <QuickStat icon={Briefcase} label="All Internships" value={internships.length} color="text-indigo-600" />
+          <QuickStat icon={Zap} label="Recent Roles" value="New" color="text-amber-500" />
+          <QuickStat icon={Globe} label="Portal Domains" value={domains.length} color="text-emerald-500" />
+          <QuickStat icon={ArrowUpRight} label="Avg Stipend" value="8k+" color="text-rose-500" />
       </div>
 
-      {/* ---------------- 3. CONTROLS (SEARCH & DOMAINS) ---------------- */}
-      <div className="sticky top-24 z-40 bg-slate-50/80 backdrop-blur-xl py-6 mb-12 border-b border-slate-200/50">
-        <div className="flex flex-col lg:flex-row gap-6 items-center">
-          <div className="relative w-full lg:max-w-2xl group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+      {/* ---------------- 3. STICKY CONTROLS ---------------- */}
+      <div className="sticky top-20 z-40 bg-slate-50/95 backdrop-blur-md py-5 mb-10 border-b border-slate-200/60">
+        <div className="flex flex-col xl:flex-row gap-6 items-center">
+          <div className="relative w-full xl:max-w-3xl group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
             <input
               type="text"
-              placeholder="Search by title, skill, or startup name..."
+              placeholder="Search by title, skills, or startup name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-16 pr-8 py-5 bg-white rounded-[2rem] border border-slate-200 shadow-sm focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 outline-none transition-all font-semibold"
+              className="w-full pl-16 pr-8 py-4 bg-white rounded-2xl border border-slate-200 shadow-sm focus:ring-4 focus:ring-indigo-50 outline-none transition-all font-semibold text-slate-700"
             />
           </div>
 
-          <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-2 w-full lg:w-auto">
-            <FilterButton label="All" active={activeDomain === "ALL"} onClick={() => setActiveDomain("ALL")} />
+          <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-2 w-full xl:w-auto">
+            <FilterPill label="All" active={activeDomain === "ALL"} onClick={() => setActiveDomain("ALL")} />
             {domains.map((d) => (
-              <FilterButton
-                key={d.key}
-                label={d.label}
-                active={activeDomain === d.key}
-                onClick={() => setActiveDomain(d.key)}
-              />
+              <FilterPill key={d.key} label={d.label} active={activeDomain === d.key} onClick={() => setActiveDomain(d.key)} />
             ))}
           </div>
         </div>
       </div>
 
-      {/* ---------------- 4. INTERNSHIP GRID ---------------- */}
+      {/* ---------------- 4. INTERNSHIP GRID (WIDE CARDS) ---------------- */}
       <section>
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="text-3xl font-black tracking-tighter uppercase italic text-slate-900">Recommended Opportunities</h2>
-          <div className="flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-widest">
-            <Filter size={14} /> Refined results
+        <div className="flex items-center justify-between mb-10 px-2">
+          <h2 className="text-2xl font-black tracking-tighter uppercase text-slate-900 italic">Recommended Matches</h2>
+          <div className="flex items-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-widest bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-sm">
+            <Filter size={12} /> Refined Result
           </div>
         </div>
 
@@ -166,10 +162,10 @@ const StudentDashboard = () => {
           {filteredInternships.length > 0 ? (
             <motion.div 
               layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
             >
               {filteredInternships.map((job, i) => (
-                <InternshipCard
+                <WideInternshipCard
                   key={job._id}
                   data={job}
                   navigate={navigate}
@@ -178,12 +174,8 @@ const StudentDashboard = () => {
               ))}
             </motion.div>
           ) : (
-            <motion.div 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="py-32 bg-white rounded-[3rem] border-2 border-dashed border-slate-200 text-center"
-            >
-                <div className="text-slate-300 font-black text-xl uppercase tracking-tighter">No Matching Opportunities</div>
-                <p className="text-slate-400 text-sm mt-2">Try adjusting your filters or search keywords.</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-32 bg-white rounded-[3rem] border-2 border-dashed border-slate-200 text-center">
+                <div className="text-slate-300 font-black text-xl uppercase tracking-widest">No matching roles found</div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -192,116 +184,117 @@ const StudentDashboard = () => {
   );
 };
 
-/* --- QUICK STAT COMPONENT --- */
+/* --- REUSABLE COMPONENTS --- */
+
 const QuickStat = ({ icon: Icon, label, value, color }) => (
-    <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+    <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between group">
         <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</p>
-            <p className="text-xl font-black text-slate-900">{value}</p>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{label}</p>
+            <p className="text-xl font-black text-slate-900 mt-0.5">{value}</p>
         </div>
-        <div className={`${color} bg-slate-50 p-3 rounded-2xl`}>
+        <div className={`${color} bg-slate-50 p-3.5 rounded-2xl group-hover:scale-110 transition-transform duration-300`}>
             <Icon size={20} />
         </div>
     </div>
 );
 
-/* --- FILTER BUTTON --- */
-const FilterButton = ({ label, active, onClick }) => (
+const FilterPill = ({ label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest border transition-all whitespace-nowrap shadow-sm ${
-      active
-        ? "bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-200"
-        : "bg-white text-slate-500 border-slate-200 hover:border-slate-900"
+    className={`px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap ${
+      active ? "bg-slate-900 text-white border-slate-900 shadow-xl" : "bg-white text-slate-500 border-slate-200 hover:border-slate-900"
     }`}
   >
     {label}
   </button>
 );
 
-/* --- INTERNSHIP CARD COMPONENT --- */
-const InternshipCard = ({ data, index, navigate }) => {
+const WideInternshipCard = ({ data, index, navigate }) => {
   const themes = [
-    { bg: "bg-[#FFF4ED]", border: "border-orange-100", accent: "bg-orange-600", text: "text-orange-600", btn: "bg-orange-100 text-orange-700" },
-    { bg: "bg-[#F0FDFA]", border: "border-teal-100", accent: "bg-teal-600", text: "text-teal-600", btn: "bg-teal-100 text-teal-700" },
-    { bg: "bg-[#F5F3FF]", border: "border-purple-100", accent: "bg-purple-600", text: "text-purple-600", btn: "bg-purple-100 text-purple-700" },
-    { bg: "bg-[#EFF6FF]", border: "border-blue-100", accent: "bg-blue-600", text: "text-blue-600", btn: "bg-blue-100 text-blue-700" },
-    { bg: "bg-[#FFF1F2]", border: "border-pink-100", accent: "bg-pink-600", text: "text-pink-600", btn: "bg-pink-100 text-pink-700" }
+    { bg: "bg-[#fcf8f6]", border: "border-orange-100", text: "text-orange-600" },
+    { bg: "bg-[#f4faf9]", border: "border-teal-100", text: "text-teal-600" },
+    { bg: "bg-[#f8f7ff]", border: "border-purple-100", text: "text-purple-600" },
+    { bg: "bg-[#f5faff]", border: "border-blue-100", text: "text-blue-600" },
+    { bg: "bg-[#fef6f7]", border: "border-pink-100", text: "text-pink-600" }
   ];
   const theme = themes[index % themes.length];
+
+  // Logic for "No Stipend" display
+  const stipendDisplay = data.stipend > 0 ? `₹${data.stipend}` : "No Stipend";
 
   return (
     <motion.div
       layout
+      whileHover={{ y: -8 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -10 }}
-      transition={{ delay: index * 0.05 }}
-      className={`${theme.bg} ${theme.border} border-2 p-6 rounded-[2.5rem] flex flex-col justify-between h-[420px] relative group overflow-hidden shadow-sm`}
+      className={`${theme.bg} ${theme.border} border-2 p-8 rounded-[3rem] flex flex-col justify-between h-[450px] transition-all duration-500 shadow-sm hover:shadow-2xl group`}
     >
       <div className="relative z-10">
-        <div className="flex justify-between items-center mb-6">
-          <div className="bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white flex items-center gap-2">
-            <Globe size={12} className={theme.text} />
-            <span className={`text-[10px] font-black uppercase tracking-wider text-slate-700`}>{data.domain || "Portal"}</span>
+        <div className="flex justify-between items-center mb-8">
+          <div className="bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-xl border border-white flex items-center gap-2 shadow-sm">
+            <Globe size={14} className={theme.text} />
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-700">{data.domain || "CIIC Partner"}</span>
           </div>
-          <button className="p-2.5 bg-white rounded-xl shadow-sm hover:bg-slate-900 hover:text-white transition-all transform active:scale-90">
-            <Bookmark size={16} />
+          <button className="p-3 bg-white rounded-2xl shadow-sm border border-slate-100 hover:bg-slate-900 hover:text-white transition-all transform active:scale-90">
+            <Bookmark size={18} />
           </button>
         </div>
 
-        <div className="flex items-center space-x-4 mb-6">
-          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-white p-2 group-hover:rotate-6 transition-transform">
-             <img src={data.startupLogo || "https://cdn-icons-png.flaticon.com/512/281/281764.png"} className="w-full h-full object-contain" />
+        <div className="flex items-center space-x-5 mb-8">
+          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl border border-white p-3 shrink-0 group-hover:rotate-3 transition-transform duration-500">
+             <img src={data.startupLogo || "https://cdn-icons-png.flaticon.com/512/281/281764.png"} className="w-full h-full object-contain" alt="Logo" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate">{data.companyName || "CIIC Startup"}</p>
-            <h3 className="text-lg font-black text-slate-900 leading-tight truncate group-hover:text-indigo-600 transition-colors">{data.title}</h3>
+            <h3 className="text-2xl font-black text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors truncate mt-1">{data.title}</h3>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-6">
-            <div className="flex items-center gap-1.5 bg-white/50 px-3 py-1.5 rounded-xl border border-white/40 text-[10px] font-bold text-slate-600">
-                <Clock size={12} /> New Role
+        <div className="flex flex-wrap gap-2 mb-8">
+            <div className="flex items-center gap-1.5 bg-white/60 px-3 py-1.5 rounded-xl border border-white/40 text-[10px] font-bold text-slate-600">
+                <CheckCircle size={12} className="text-emerald-500" /> CIIC Verified
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/60 px-3 py-1.5 rounded-xl border border-white/40 text-[10px] font-bold text-slate-600">
+                <Clock size={12} className="text-indigo-500" /> Apply by {new Date(data.applicationDeadline).toLocaleDateString() || 'Soon'}
             </div>
         </div>
 
-        <div className="space-y-3 pt-6 border-t border-slate-900/5">
-          <div className="flex items-center justify-between text-slate-500">
-            <div className="flex items-center space-x-2">
-              <MapPin size={14} className="opacity-60" />
-              <span className="text-[11px] font-bold">{data.location || "Remote"}</span>
+        <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-900/5">
+            <div className="flex items-center space-x-3 text-slate-500">
+              <MapPin size={16} className="opacity-30" />
+              <span className="text-[11px] font-bold uppercase tracking-wide">{data.location || "Remote"}</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <Calendar size={14} className="opacity-60" />
-              <span className="text-[11px] font-bold">{data.duration}</span>
+            <div className="flex items-center space-x-3 text-slate-500">
+              <Calendar size={16} className="opacity-30" />
+              <span className="text-[11px] font-bold uppercase tracking-wide">{data.duration}</span>
             </div>
-          </div>
-          <div className="flex items-center space-x-2 text-slate-900">
-            <Banknote size={14} className="opacity-60" />
-            <span className="text-sm font-black">₹{data.stipend || "0"} <span className="text-[10px] text-slate-400 uppercase font-bold">/ Month</span></span>
-          </div>
+            <div className="col-span-2 flex items-center space-x-3 text-slate-900 mt-1">
+              <Banknote size={18} className="opacity-30" />
+              <span className={`text-sm font-black italic ${data.stipend > 0 ? 'text-slate-900' : 'text-slate-400'}`}>
+                {stipendDisplay} 
+                {data.stipend > 0 && <span className="text-[10px] text-slate-400 font-bold not-italic ml-1 uppercase">/ Mo</span>}
+              </span>
+            </div>
         </div>
       </div>
 
-      <div className="flex items-center space-x-2 relative z-10">
+      {/* Uniform Action Buttons */}
+      <div className="flex items-center space-x-3 relative z-10 pt-4">
         <button 
           onClick={() => navigate(`/student/internships/${data._id}`)}
-          className={`flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:brightness-95 active:scale-95 shadow-xl shadow-slate-200 ${theme.btn}`}
+          className="flex-[2.5] py-4.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
         >
-          Quick Apply
+          Quick Apply <ArrowUpRight size={14} />
         </button>
-        <button 
+        {/* <button 
           onClick={() => navigate(`/student/internships/${data._id}`)}
-          className="p-4 bg-slate-950 text-white rounded-2xl hover:bg-indigo-600 transition-all shadow-xl shadow-slate-300 active:scale-90"
+          className="flex-1 py-4.5 bg-slate-950 text-white rounded-[1.5rem] hover:bg-slate-800 transition-all shadow-xl flex justify-center items-center group/btn"
         >
-          <ChevronRight size={18} />
-        </button>
+          <Info size={18} className="mr-2" />
+          <span className="text-[9px] font-black uppercase">Details</span>
+        </button> */}
       </div>
-      
-      {/* Decorative Accents */}
-      <div className={`absolute bottom-[-20%] right-[-10%] w-32 h-32 rounded-full blur-3xl opacity-20 ${theme.accent}`}></div>
     </motion.div>
   );
 };

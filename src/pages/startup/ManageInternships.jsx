@@ -2,27 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search,
-  Plus,
-  Users,
-  Calendar,
-  MapPin,
-  Edit3,
-  Trash2,
-  ExternalLink,
-  Loader2,
-  Inbox,
-  Clock,
-  Briefcase,
-  ChevronRight,
-  TrendingUp
+  Search, Plus, Users, Calendar, MapPin, 
+  Edit3, Trash2, ExternalLink, Loader2, 
+  Inbox, Clock, Briefcase, ChevronRight,
+  TrendingUp, X, Save, AlertCircle
 } from "lucide-react";
 import api from "../../api/axiosConfig.js";
+import { useDomains } from "../../context/DomainContext.jsx";
 
 const ManageInternships = () => {
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedInternship, setSelectedInternship] = useState(null); // For Edit Modal
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +23,7 @@ const ManageInternships = () => {
 
   const fetchMyInternships = async () => {
     try {
-      // Updated to your specific endpoint
-      const res = await api.get("/startup/get-internships"); 
+      const res = await api.get("/startup/get-internships");
       setInternships(res.data);
     } catch (err) {
       console.error("Error fetching internships", err);
@@ -41,187 +32,237 @@ const ManageInternships = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this internship? This action cannot be undone.")) return;
+    try {
+      await api.delete(`/startup/delete-internship/${id}`);
+      setInternships(prev => prev.filter(item => item._id !== id));
+    } catch (err) {
+      alert("Failed to delete internship");
+    }
+  };
+
   const filteredInternships = internships.filter((job) =>
     job.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center bg-slate-50">
-        <div className="relative flex flex-col items-center">
-          <Loader2 className="w-12 h-12 text-rose-600 animate-spin" />
-          <div className="absolute inset-0 blur-2xl bg-rose-400/20 animate-pulse"></div>
-          <p className="mt-6 text-slate-500 font-bold uppercase tracking-[0.3em] text-[10px]">Accessing Console</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="h-screen flex flex-col items-center justify-center bg-[#F8FAFC]">
+      <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+      <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] mt-4">Loading Console</p>
+    </div>
+  );
 
   return (
-    <div className="w-full max-w-[1500px] mx-auto pb-20 px-4 md:px-8">
+    <div className="w-full max-w-[1500px] mx-auto pb-20 px-6 font-sans">
       
       {/* --- HEADER --- */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-black uppercase tracking-widest">
-            <Briefcase size={12} /> Recruitment Hub
-          </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic">Manage Internships</h1>
-          <p className="text-slate-500 font-medium text-sm">Review, track, and manage your active career opportunities.</p>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12 pt-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Internships</h1>
+          <p className="text-slate-500 text-sm mt-1">Oversight and management of your active recruitment roles.</p>
         </div>
-        
         <Link
           to="/startup/internships/create"
-          className="group flex items-center justify-center gap-3 bg-slate-900 hover:bg-rose-600 text-white px-8 py-4 rounded-2xl font-bold text-sm shadow-xl shadow-slate-200 transition-all active:scale-95"
+          className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm active:scale-95"
         >
-          <Plus size={20} className="group-hover:rotate-90 transition-transform" /> 
-          <span>Post New Internship</span>
+          <Plus size={18} /> Post New Role
         </Link>
       </div>
 
-      {/* --- ANALYTICS TILES --- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <MetricCard label="Active Roles" value={internships.length} icon={Calendar} theme="rose" />
-        <MetricCard label="Total Applicants" value={internships.reduce((acc, curr) => acc + (curr.applicationsCount || 0), 0)} icon={Users} theme="indigo" />
-        <MetricCard label="Growth Index" value="+12%" icon={TrendingUp} theme="emerald" />
+      {/* --- STATS --- */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <StatTile label="Live Postings" value={internships.length} icon={Briefcase} />
+        <StatTile label="Total Applicants" value={internships.reduce((acc, curr) => acc + (curr.applicationsCount || 0), 0)} icon={Users} />
+        <StatTile label="Engagement" value="High" icon={TrendingUp} />
       </div>
 
-      {/* --- FILTER & SEARCH BAR --- */}
-      <div className="sticky top-20 z-40 bg-slate-50/90 backdrop-blur-md py-6 mb-8 border-b border-slate-200/60">
-        <div className="relative w-full max-w-2xl group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-rose-600 transition-colors" size={20} />
-          <input
-            type="text"
-            placeholder="Search your postings by title or role..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-16 pr-8 py-5 bg-white border border-slate-200 rounded-[2rem] shadow-sm focus:ring-4 focus:ring-rose-50 outline-none transition-all font-semibold text-slate-700"
-          />
-        </div>
+      {/* --- FILTER BAR --- */}
+      <div className="relative mb-8 group">
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+        <input
+          type="text"
+          placeholder="Filter your postings by title..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-14 pr-6 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-blue-50 outline-none transition-all font-medium text-sm text-slate-700"
+        />
       </div>
 
-      {/* --- MANAGEMENT LIST --- */}
-      <div className="space-y-5">
+      {/* --- LIST --- */}
+      <div className="space-y-4">
         <AnimatePresence mode="popLayout">
           {filteredInternships.length > 0 ? (
             filteredInternships.map((job, index) => (
-              <InternshipManagementRow key={job._id} job={job} index={index} navigate={navigate} />
+              <InternshipRow 
+                key={job._id} 
+                job={job} 
+                index={index} 
+                navigate={navigate} 
+                onEdit={() => setSelectedInternship(job)}
+                onDelete={() => handleDelete(job._id)}
+              />
             ))
           ) : (
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="py-40 bg-white rounded-[3rem] border-2 border-dashed border-slate-200 text-center flex flex-col items-center"
-            >
-              <Inbox size={60} className="text-slate-100 mb-6" />
-              <div className="text-slate-400 font-black text-xl uppercase tracking-tighter italic">Console Empty</div>
-              <p className="text-slate-400 text-sm mt-2 font-medium">You haven't posted any internships yet.</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-32 bg-white rounded-3xl border border-slate-200 text-center flex flex-col items-center">
+              <Inbox size={48} className="text-slate-200 mb-4" />
+              <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">No matching roles found</p>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      {/* --- UPDATE MODAL --- */}
+      <AnimatePresence>
+        {selectedInternship && (
+          <EditInternshipModal 
+            job={selectedInternship} 
+            onClose={() => setSelectedInternship(null)} 
+            onRefresh={fetchMyInternships}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
 /* --- SUB-COMPONENTS --- */
 
-const MetricCard = ({ label, value, icon: Icon, theme }) => {
-  const themes = {
-    rose: "bg-rose-50 text-rose-600 border-rose-100",
-    indigo: "bg-indigo-50 text-indigo-600 border-indigo-100",
-    emerald: "bg-emerald-50 text-emerald-600 border-emerald-100",
+const StatTile = ({ label, value, icon: Icon }) => (
+  <div className="bg-white p-6 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
+    <div>
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{label}</p>
+      <p className="text-2xl font-bold text-slate-900 leading-none">{value}</p>
+    </div>
+    <div className="p-3 bg-slate-50 text-slate-400 rounded-xl">
+      <Icon size={20} />
+    </div>
+  </div>
+);
+
+const InternshipRow = ({ job, index, navigate, onEdit, onDelete }) => (
+  <motion.div
+    layout
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="bg-white border border-slate-200 p-6 rounded-2xl flex flex-col xl:flex-row items-center justify-between gap-8 hover:border-blue-200 transition-all group"
+  >
+    <div className="flex items-center gap-6 flex-1 w-full xl:w-auto">
+      <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0 shadow-inner group-hover:bg-white transition-colors">
+        <Clock className="text-slate-300" size={24} />
+      </div>
+      <div className="min-w-0 flex-1">
+         <div className="flex items-center gap-2 mb-1.5">
+           <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-600 text-[9px] font-bold uppercase tracking-wider">{job.domain}</span>
+           <span className="text-[10px] text-slate-400 font-medium">Applied: {new Date(job.createdAt).toLocaleDateString()}</span>
+         </div>
+         <h3 className="text-lg font-bold text-slate-900 leading-tight tracking-tight">{job.title}</h3>
+         <div className="flex items-center gap-4 mt-2 text-slate-500 font-semibold text-xs">
+            <div className="flex items-center gap-1"><MapPin size={14} /> {job.location}</div>
+            <div className="flex items-center gap-1"><Calendar size={14} /> {job.duration}</div>
+         </div>
+      </div>
+    </div>
+
+    <div className="hidden lg:flex items-center gap-12 px-12 border-x border-slate-100">
+        <div className="text-center">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Applicants</p>
+            <span className="text-xl font-bold text-slate-900">{job.applicationsCount || 0}</span>
+        </div>
+        <div className="text-center">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Stipend</p>
+            <span className="text-sm font-bold text-slate-700 italic">₹{job.stipend || "0"}</span>
+        </div>
+    </div>
+
+    <div className="flex items-center gap-3 w-full xl:w-auto">
+      <button 
+        onClick={() => navigate(`/startup/internships/${job._id}/applications`)}
+        className="flex-1 xl:flex-none flex items-center justify-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-blue-600 transition-all shadow-sm"
+      >
+        Candidates <ChevronRight size={14} />
+      </button>
+      <button onClick={onEdit} className="p-3 bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"><Edit3 size={18} /></button>
+      <button onClick={onDelete} className="p-3 bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-red-600 hover:border-red-200 transition-all shadow-sm"><Trash2 size={18} /></button>
+    </div>
+  </motion.div>
+);
+
+/* --- EDIT MODAL --- */
+const EditInternshipModal = ({ job, onClose, onRefresh }) => {
+  const { domains } = useDomains();
+  const [formData, setFormData] = useState({ ...job });
+  const [saving, setSaving] = useState(false);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await api.patch(`/startup/update-internship/${job._id}`, formData);
+      onRefresh();
+      onClose();
+    } catch (err) {
+      alert("Failed to update internship");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-lg transition-all duration-300">
-      <div>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{label}</p>
-        <p className="text-3xl font-black text-slate-900">{value}</p>
-      </div>
-      <div className={`p-5 rounded-[1.5rem] border ${themes[theme]}`}>
-        <Icon size={24} />
-      </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+        <div className="p-8 md:p-10">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">Edit Posting</h2>
+              <p className="text-sm text-slate-500">Update role requirements and logistics.</p>
+            </div>
+            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={20} /></button>
+          </div>
+
+          <form onSubmit={handleUpdate} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ModalInput label="Job Title" value={formData.title} onChange={(v) => setFormData({...formData, title: v})} />
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 ml-1">Domain</label>
+                <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:border-blue-600 transition-all"
+                  value={formData.domain} onChange={(e) => setFormData({...formData, domain: e.target.value})}>
+                  {domains.map(d => <option key={d.key} value={d.key}>{d.label}</option>)}
+                </select>
+              </div>
+              <ModalInput label="Location" value={formData.location} onChange={(v) => setFormData({...formData, location: v})} />
+              <ModalInput label="Duration" value={formData.duration} onChange={(v) => setFormData({...formData, duration: v})} />
+              <ModalInput label="Stipend (₹)" type="number" value={formData.stipend} onChange={(v) => setFormData({...formData, stipend: v})} />
+              <ModalInput label="Positions" type="number" value={formData.positionsAvailable} onChange={(v) => setFormData({...formData, positionsAvailable: v})} />
+            </div>
+
+            <div className="space-y-1.5">
+               <label className="text-xs font-bold text-slate-700 ml-1">Role Description</label>
+               <textarea className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:border-blue-600 transition-all min-h-[120px]"
+                 value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <button type="submit" disabled={saving} className="flex-1 bg-slate-900 hover:bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm transition-all flex justify-center items-center gap-2 shadow-sm disabled:opacity-50">
+                {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                <span>Save Changes</span>
+              </button>
+              <button type="button" onClick={onClose} className="px-8 py-3.5 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200 transition-all">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </motion.div>
     </div>
   );
 };
 
-const InternshipManagementRow = ({ job, index, navigate }) => {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      whileHover={{ scale: 1.01 }}
-      transition={{ delay: index * 0.05 }}
-      className="bg-white border border-slate-200 p-6 md:p-8 rounded-[2.5rem] flex flex-col xl:flex-row items-center justify-between gap-8 hover:shadow-2xl hover:shadow-rose-100/30 transition-all group relative overflow-hidden"
-    >
-      {/* Visual Accent */}
-      <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-      {/* Info Section */}
-      <div className="flex items-center gap-8 flex-1 w-full xl:w-auto">
-        <div className="w-20 h-20 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-3 transition-transform duration-500">
-          <Clock className="text-rose-600/40" size={28} />
-        </div>
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-slate-100 text-[9px] font-black uppercase tracking-widest text-slate-500">
-              {job.domain || "CIIC Startup"}
-            </span>
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
-               Live
-            </div>
-          </div>
-          <h3 className="text-2xl font-black text-slate-900 truncate tracking-tight uppercase italic">{job.title}</h3>
-          <div className="flex items-center gap-4 mt-2">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
-              <MapPin size={14} className="text-rose-500" /> {job.location}
-            </div>
-            <div className="w-1 h-1 rounded-full bg-slate-200" />
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-widest">
-              {job.duration}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Performance Section */}
-      <div className="hidden lg:grid grid-cols-2 gap-12 px-12 border-x border-slate-100">
-        <div className="text-center">
-          <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-2">Applicants</p>
-          <div className="flex items-center justify-center gap-2.5">
-             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-             <span className="text-2xl font-black text-slate-900 leading-none">{job.applicationsCount || 0}</span>
-          </div>
-        </div>
-        <div className="text-center">
-          <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-2">Stipend</p>
-          <span className="text-lg font-black text-slate-600 italic">₹{job.stipend}</span>
-        </div>
-      </div>
-
-      {/* Action Area */}
-      <div className="flex items-center gap-3 w-full xl:w-auto">
-        <button 
-          onClick={() => navigate(`/startup/internships/${job._id}/applications`)}
-          className="flex-1 xl:flex-none flex items-center justify-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-rose-600 transition-all shadow-xl shadow-slate-200 group/btn"
-        >
-          <span>Applicants</span>
-          <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-        </button>
-        
-        <div className="flex gap-2">
-            <button className="p-4 bg-white text-slate-400 rounded-2xl hover:text-indigo-600 hover:bg-indigo-50 transition-all border border-slate-200 shadow-sm active:scale-90">
-                <Edit3 size={20} />
-            </button>
-            <button className="p-4 bg-white text-slate-400 rounded-2xl hover:text-red-600 hover:bg-red-50 transition-all border border-slate-200 shadow-sm active:scale-90">
-                <Trash2 size={20} />
-            </button>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+const ModalInput = ({ label, value, onChange, type = "text" }) => (
+  <div className="space-y-1.5">
+    <label className="text-xs font-bold text-slate-700 ml-1">{label}</label>
+    <input type={type} value={value || ""} onChange={(e) => onChange(e.target.value)}
+      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:border-blue-600 transition-all" />
+  </div>
+);
 
 export default ManageInternships;

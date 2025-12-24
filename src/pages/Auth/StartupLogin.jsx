@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Loader2, Rocket, ArrowLeft, Sparkles } from 'lucide-react';
+import { Mail, Lock, Loader2, ArrowLeft, ShieldCheck } from 'lucide-react';
 import api from '../../api/axiosConfig';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -17,52 +17,117 @@ const StartupLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       const res = await api.post('/auth/startup/login', { email, password });
-      login(res.data.token, res.data.role);
+      login(res.data.token, res.data.role, res.data.id);
       navigate("/startup/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Startup authentication failed");
-    } finally { setLoading(false); }
+      setError(err.response?.data?.message || "Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fff5f7] p-6 relative overflow-hidden">
-      {/* Decorative Blur Orbs */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-200 rounded-full blur-[120px] opacity-50"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-200 rounded-full blur-[120px] opacity-50"></div>
+    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-6 font-sans">
+      
+      {/* --- MINIMAL BACK BUTTON --- */}
+      <button 
+        onClick={() => navigate('/')} 
+        className="fixed top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-all text-xs font-semibold tracking-wide"
+      >
+        <ArrowLeft size={14} /> BACK TO PORTAL
+      </button>
 
-      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-lg relative">
-        <div className="bg-white/80 backdrop-blur-xl border border-white p-12 rounded-[3rem] shadow-2xl shadow-rose-200/50">
-          <div className="text-center">
-            <div className="inline-flex p-4 bg-rose-600 rounded-3xl shadow-lg shadow-rose-200 mb-6">
-              <Rocket className="w-8 h-8 text-white" />
-            </div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Startup Portal</h2>
-            <p className="text-rose-500 font-semibold text-sm uppercase tracking-widest mt-2 flex items-center justify-center gap-2">
-              <Sparkles className="w-4 h-4" /> Hire the Future
-            </p>
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        className="w-full max-w-[440px]"
+      >
+        {/* --- BRAND LOGO --- */}
+        <div className="flex flex-col items-center mb-10 text-center">
+          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-6">
+             <ShieldCheck size={24} className="text-white" />
           </div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Startup Sign In</h1>
+          <p className="text-slate-500 text-sm mt-2">Manage your internships and applicants.</p>
+        </div>
 
-          {error && <div className="mt-8 p-4 bg-rose-50 text-rose-700 rounded-2xl border border-rose-100 text-center text-sm">{error}</div>}
+        {/* --- LOGIN CARD --- */}
+        <div className="bg-white border border-slate-200 p-8 md:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-medium">
+              {error}
+            </div>
+          )}
 
-          <form onSubmit={handleSubmit} className="mt-10 space-y-5">
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-6 py-4 bg-white border border-rose-100 rounded-2xl focus:ring-4 focus:ring-rose-100 outline-none transition-all placeholder:text-slate-300" 
-              placeholder="Business Email Address" />
-            
-            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-6 py-4 bg-white border border-rose-100 rounded-2xl focus:ring-4 focus:ring-rose-100 outline-none transition-all placeholder:text-slate-300" 
-              placeholder="Secure Password" />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 ml-1">Email Address</label>
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                  <Mail size={18} />
+                </div>
+                <input 
+                  type="email" 
+                  required 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all placeholder:text-slate-400 text-sm font-medium" 
+                  placeholder="name@startup.com" 
+                />
+              </div>
+            </div>
 
-            <button disabled={loading} className="w-full bg-rose-600 hover:bg-rose-700 text-white py-4 rounded-2xl font-bold shadow-xl shadow-rose-200 transition-all active:scale-95 flex justify-center">
-              {loading ? <Loader2 className="animate-spin" /> : "Access Dashboard"}
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center px-1">
+                <label className="text-xs font-bold text-slate-700">Password</label>
+                <button type="button" className="text-[11px] font-bold text-blue-600 hover:text-blue-700">Forgot?</button>
+              </div>
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                  <Lock size={18} />
+                </div>
+                <input 
+                  type="password" 
+                  required 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all placeholder:text-slate-400 text-sm font-medium" 
+                  placeholder="••••••••" 
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button 
+              disabled={loading} 
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm transition-all active:scale-[0.98] flex justify-center items-center gap-2 disabled:opacity-70 mt-4 shadow-sm"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin" size={18} />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <span>Continue to Dashboard</span>
+              )}
             </button>
           </form>
+        </div>
 
-          <button onClick={() => navigate('/')} className="mt-8 w-full text-slate-400 hover:text-rose-600 transition text-sm font-medium">
-            Not a Startup? Go back
-          </button>
+        {/* --- FOOTER --- */}
+        <div className="mt-8 text-center">
+            <p className="text-slate-400 text-xs font-medium">
+              Don't have a corporate account? <Link to="/register/startup" className="text-blue-600 font-bold hover:underline">Apply for Partnership</Link>
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-2 opacity-40">
+               <span className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">© 2025 CIIC Council</span>
+            </div>
         </div>
       </motion.div>
     </div>

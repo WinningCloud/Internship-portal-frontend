@@ -20,8 +20,8 @@ const StudentLogin = () => {
     setError("");
     try {
       const res = await api.post('/auth/student/login', { email, password });
-      if (res.data.user.role !== 'STUDENT') throw new Error("Please use the correct portal.");
-      login(res.data.token, res.data.user.role);
+      if (res.data.role !== 'STUDENT') throw new Error("Please use the correct portal.");
+      login(res.data.token, res.data.role, res.data.id);
       navigate("/student/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Invalid credentials");

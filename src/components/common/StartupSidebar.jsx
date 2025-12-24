@@ -1,4 +1,6 @@
+import React, { useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion'; // 👈 FIXED: Added missing import
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -7,13 +9,16 @@ import {
   LogOut, 
   Sparkles 
 } from 'lucide-react';
-import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
 const StartupSidebar = () => {
   const { logout, user } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Dynamic user data from context
+  const companyName = user?.name || "Startup Admin";
+  const companyEmail = user?.email || "farhantech@gmail.com";
 
   const menuItems = [
     { name: 'Dashboard', path: '/startup/dashboard', icon: LayoutDashboard },
@@ -28,26 +33,29 @@ const StartupSidebar = () => {
   };
 
   return (
-    <div className="h-screen w-72 bg-[#020617] text-slate-300 flex flex-col fixed left-0 top-0 border-r border-slate-800/60 shadow-[4px_0_24px_rgba(0,0,0,0.3)] z-50">
+    <div className="h-screen w-72 bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0 z-50 font-sans">
       
-      {/* 1. Brand Logo Section - Azure Gradient */}
+      {/* 1. Brand Section - High Contrast Minimal */}
       <div className="p-8 mb-4">
-        <div className="flex items-center space-x-3 group cursor-pointer" onClick={() => navigate('/startup/dashboard')}>
-          <div className="bg-gradient-to-tr from-blue-600 to-indigo-400 p-2.5 rounded-2xl shadow-lg shadow-blue-500/20 group-hover:rotate-12 transition-all duration-500">
-            <Sparkles className="w-6 h-6 text-white" />
+        <div 
+          className="flex items-center gap-3 group cursor-pointer" 
+          onClick={() => navigate('/startup/dashboard')}
+        >
+          <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-sm group-hover:bg-blue-600 transition-all duration-300">
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <div>
-            <h1 className="text-xl font-black text-white tracking-tight leading-none uppercase">CIIC</h1>
-            <p className="text-[10px] uppercase tracking-[0.25em] text-blue-400 font-bold mt-1.5">Executive Suite</p>
+          <div className="flex flex-col">
+            <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-none uppercase">CIIC</h1>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Startup Hub</p>
           </div>
         </div>
       </div>
 
       {/* 2. Navigation Menu */}
-      <div className="flex-1 px-4 overflow-y-auto custom-scrollbar">
-        <p className="px-5 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6">Management Console</p>
+      <div className="flex-1 px-4 overflow-y-auto">
+        <p className="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Management</p>
         
-        <nav className="space-y-1.5">
+        <nav className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -56,28 +64,26 @@ const StartupSidebar = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`group relative flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-500 ${
+                className={`group relative flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 ${
                   isActive 
-                  ? 'bg-blue-600/10 text-blue-50' 
-                  : 'hover:bg-slate-800/40 hover:text-blue-100'
+                  ? 'bg-blue-50 text-blue-700' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                {/* Active Indicator Neon Pill */}
-                {isActive && (
-                  <div className="absolute left-0 w-1.5 h-8 bg-blue-500 rounded-r-full shadow-[0_0_20px_rgba(59,130,246,0.8)]" />
-                )}
-
-                <div className="flex items-center space-x-4">
-                  <div className={`transition-all duration-300 ${isActive ? 'scale-110' : 'group-hover:translate-x-1'}`}>
-                    <Icon className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-slate-500 group-hover:text-blue-400'}`} />
-                  </div>
-                  <span className={`text-sm font-semibold tracking-wide transition-colors ${isActive ? 'text-blue-100' : 'text-slate-400'}`}>
+                <div className="flex items-center gap-3">
+                  <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                  <span className={`text-[13px] font-semibold tracking-tight ${isActive ? 'text-blue-700' : 'text-slate-600'}`}>
                     {item.name}
                   </span>
                 </div>
 
+                {/* Animated Active Indicator */}
                 {isActive && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse shadow-[0_0_10px_rgba(96,165,250,1)]" />
+                  <motion.div 
+                    layoutId="sidebar-active-indicator"
+                    className="w-1 h-5 bg-blue-600 rounded-full absolute right-2"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
                 )}
               </Link>
             );
@@ -85,39 +91,31 @@ const StartupSidebar = () => {
         </nav>
       </div>
 
-      {/* 3. Luxury User Section */}
-      <div className="p-6 mt-auto">
-        <div className="relative group p-4 rounded-3xl bg-slate-900/50 border border-slate-800/50 mb-4 overflow-hidden shadow-inner">
-            {/* Background decorative glow */}
-            <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all" />
-            
-            <div className="flex items-center space-x-3 relative z-10">
-                <div className="relative">
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 flex items-center justify-center shadow-lg">
-                        <UserCircle className="w-7 h-7 text-blue-400" />
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-[#020617] rounded-full shadow-lg" />
-                </div>
-                <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-slate-100 truncate italic">Startup Admin</p>
-                    <p className="text-[10px] text-blue-400/80 truncate font-black tracking-widest uppercase mt-0.5">Verified</p>
-                </div>
-            </div>
+      {/* 3. Integrated User Section */}
+      <div className="p-4 mt-auto border-t border-slate-100 bg-slate-50/50">
+        
+        {/* Dynamic User Info Card */}
+        <div className="flex items-center gap-3 p-3 mb-3 bg-white border border-slate-200 rounded-2xl shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+            <UserCircle className="w-6 h-6 text-slate-400" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[13px] font-bold text-slate-900 truncate tracking-tight">{companyName}</p>
+            <p className="text-[11px] text-slate-400 truncate font-medium">{companyEmail}</p>
+          </div>
         </div>
 
         <button 
           onClick={handleLogout}
-          className="w-full group flex items-center justify-center space-x-3 p-4 rounded-2xl text-blue-50 font-black text-[11px] uppercase tracking-widest bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-900/20 transition-all duration-300 active:scale-95 border border-blue-400/20"
+          className="w-full flex items-center justify-center gap-2 p-3 rounded-xl text-slate-600 font-bold text-[12px] uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all active:scale-95 border border-transparent hover:border-red-100"
         >
-          <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
-          <span>Secure Sign Out</span>
+          <LogOut size={16} />
+          <span>Sign Out</span>
         </button>
 
-        <div className="flex items-center justify-center space-x-2 mt-6 opacity-20">
-            <div className="h-[1px] w-8 bg-blue-500" />
-            <span className="text-[9px] font-black tracking-tighter text-blue-300 uppercase">Est. 2025</span>
-            <div className="h-[1px] w-8 bg-blue-500" />
-        </div>
+        <p className="text-[10px] text-center text-slate-300 mt-4 font-bold tracking-widest uppercase">
+          © 2025 CIIC Council
+        </p>
       </div>
     </div>
   );
