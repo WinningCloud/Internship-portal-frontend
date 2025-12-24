@@ -51,7 +51,7 @@ const StudentLogin = () => {
             ))}
           </div>
         </div>
-        <p className="text-indigo-200 text-sm italic">© 2025 CIIC Incubation Center</p>
+        <p className="text-indigo-200 text-sm italic">©Crescent Innovation and Incubation Council </p>
       </div>
 
       {/* Right Side: Form */}
@@ -62,7 +62,7 @@ const StudentLogin = () => {
           </button>
           
           <h2 className="text-3xl font-bold text-slate-900">Welcome Back!</h2>
-          <p className="text-slate-500 mt-2">Log in to manage your internship applications.</p>
+          <p className="text-slate-500 mt-2">Log in to check latest internship opportunites.</p>
 
           {error && <div className="mt-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-sm">{error}</div>}
 
@@ -88,7 +88,7 @@ const StudentLogin = () => {
             </div>
 
             <button disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-100 transition-all flex justify-center items-center">
-              {loading ? <Loader2 className="animate-spin" /> : "Sign In to Dashboard"}
+              {loading ? <Loader2 className="animate-spin" /> : "Log in to dashboard"}
             </button>
           </form>
 

@@ -33,6 +33,7 @@ const AppRoutes = () => {
             <Route path="/login/student" element={<StudentLogin />} />
             <Route path="/login/startup" element={<StartupLogin />} />
             <Route path="/register/student" element={<StudentRegister />} />
+            <Route path="/login" element={<LandingPage />} />
 
             <Route element={<ProtectedRoute allowedRoles={['STARTUP']} />}>
               <Route element={<StartupLayout />}>
