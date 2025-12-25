@@ -121,14 +121,14 @@ const StartupLogin = () => {
         </div>
 
         {/* --- FOOTER --- */}
-        <div className="mt-8 text-center">
+        {/* <div className="mt-8 text-center">
             <p className="text-slate-400 text-xs font-medium">
               Don't have a corporate account? <Link to="/register/startup" className="text-blue-600 font-bold hover:underline">Apply for Partnership</Link>
             </p>
             <div className="mt-10 flex items-center justify-center gap-2 opacity-40">
                <span className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">© 2025 CIIC Council</span>
             </div>
-        </div>
+        </div> */}
       </motion.div>
     </div>
   );

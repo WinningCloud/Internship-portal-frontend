@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Loader2, GraduationCap, ArrowLeft, CheckCircle } from 'lucide-react';
 import api from '../../api/axiosConfig';
 import { AuthContext } from '../../context/AuthContext';
+import ciicLogo from '../../assets/ciicLogo.jpg'
 
 const StudentLogin = () => {
   const [email, setEmail] = useState("");
@@ -33,12 +34,25 @@ const StudentLogin = () => {
       {/* Left Side: Visual Branding */}
       <div className="hidden lg:flex w-1/2 bg-indigo-600 p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-          <div className="flex items-center space-x-3 text-white">
-            <GraduationCap className="w-10 h-10" />
-            <span className="text-2xl font-black tracking-tighter">CIIC STUDENT</span>
-          </div>
-        </motion.div>
+       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+      <div className="flex items-center space-x-4 text-white">
+        {/* Optional: Icon remains indigo-friendly */}
+        <GraduationCap className="w-10 h-10 shrink-0" />
+        
+        {/* 2. Optimized Image Container */}
+        <div className="flex items-center justify-center">
+          <img 
+            src={ciicLogo} 
+            alt="CIIC Logo" 
+            // Removed brightness-0 invert to show real colors
+            // Added h-12 for a slightly more prominent look
+            className="h-12 w-auto object-contain drop-shadow-md"
+            // Safety Check: If the image fails to load, it won't show a broken icon
+            onError={(e) => { e.target.style.display = 'none'; }} 
+          />
+        </div>
+      </div>
+    </motion.div>
 
         <div className="relative z-10">
           <h2 className="text-5xl font-bold text-white leading-tight">Your gateway to <br />top-tier startups.</h2>
