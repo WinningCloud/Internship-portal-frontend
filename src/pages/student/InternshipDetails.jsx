@@ -100,10 +100,8 @@ const InternshipDetails = () => {
                 <img src={data.startupLogo || "https://cdn-icons-png.flaticon.com/512/281/281764.png"} alt="Logo" className="w-full h-full object-contain" />
               </div>
               <div className="min-w-0">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase tracking-widest mb-2">
-                  <Sparkles size={10} /> CIIC Verified
-                </div>
-                <h1 className="text-2xl font-black text-slate-900 tracking-tighter leading-tight uppercase truncate">{data.title}</h1>
+
+                <h1 className="text-3xl font-black text-slate-900 tracking-tighter leading-tight  truncate">{data.title}</h1>
                 <p className="text-indigo-600 font-bold mt-1 flex items-center gap-2 text-sm">
                   at {data.startupId?.name || "Startup Partner"} <Globe size={14} className="opacity-40" />
                 </p>
@@ -147,7 +145,7 @@ const InternshipDetails = () => {
         <div className="lg:col-span-4 flex flex-col min-h-0 space-y-6">
           <div className="bg-[#020617] text-white rounded-[3rem] p-10 shadow-2xl relative overflow-hidden border border-white/5 flex flex-col shrink-0">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl" />
-            <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-10">Snapshot Details</h3>
+            <h3 className="text-[14px] text-white text-slate-800 uppercase tracking-[0.3em] mb-10">Internship Details</h3>
             
             <div className="space-y-6 flex-1">
               <SidebarItem icon={Banknote} label="Stipend" value={data.stipend > 0 ? `₹${data.stipend}` : "No Stipend"} color="text-emerald-400" />
@@ -159,17 +157,17 @@ const InternshipDetails = () => {
             <div className="mt-10 pt-8 border-t border-white/5">
                 <button 
                 onClick={() => setIsModalOpen(true)}
-                className="w-full bg-indigo-600 hover:bg-indigo-500 py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 group"
+                className="w-full bg-indigo-600 hover:bg-indigo-500 py-5 rounded-[1.5rem] font-black text-[16px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 group"
                 >
-                Apply Position <Send size={14} className="group-hover:translate-x-1 transition-transform" />
+                Quick Apply <Send size={14} className="group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-[2.5rem] p-6 text-center shadow-sm shrink-0">
+          {/* <div className="bg-white border border-slate-200 rounded-[2.5rem] p-6 text-center shadow-sm shrink-0">
             <p className="text-[9px] font-bold text-slate-400 mb-2 uppercase tracking-widest">Support Access</p>
             <a href="mailto:portal@ciic.res.in" className="text-xs font-black text-indigo-600 hover:underline tracking-tight uppercase">CIIC Administration</a>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -186,7 +184,7 @@ const InternshipDetails = () => {
                     <div>
                       <div className="w-16 h-16 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mb-6 shadow-inner"><ShieldCheck size={40} /></div>
                       <h2 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none">Confirm Submission</h2>
-                      <p className="text-slate-500 text-sm mt-3 font-medium leading-relaxed">Transmitting verified CIIC student profile and resume to <span className="font-bold text-indigo-600 uppercase">{data.startupId?.name}</span>.</p>
+                      <p className="text-slate-500 text-sm mt-3 font-medium leading-relaxed">Applying will transmit your profile and resume to <span className="font-bold text-indigo-600 uppercase">{data.startupId?.name}</span>.</p>
                     </div>
                     <button onClick={handleApply} disabled={isApplying} className="w-full bg-slate-950 text-white py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.3em] shadow-2xl hover:bg-indigo-600 transition-all flex justify-center items-center gap-3 disabled:opacity-50">
                       {isApplying ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
@@ -215,7 +213,7 @@ const SidebarItem = ({ icon: Icon, label, value, color }) => (
     </div>
     <div className="min-w-0">
       <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1 leading-none">{label}</p>
-      <p className="text-sm font-black text-slate-100 tracking-tight leading-none truncate">{value}</p>
+      <p className="text-m font-black  tracking-tight leading-none truncate uppercase">{value}</p>
     </div>
   </div>
 );

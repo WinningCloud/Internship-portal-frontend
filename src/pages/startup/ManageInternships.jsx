@@ -127,9 +127,9 @@ const ManageInternships = () => {
       {/* --- ACTIVE SECTION --- */}
       <section className="mb-12">
         <div className="flex items-center gap-3 mb-6 px-2">
-            <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">Active Postings</h2>
+            <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">Active Internships</h2>
             <div className="h-[1px] flex-1 bg-slate-100"></div>
-            <span className="text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-100">
+            <span className="text-[14px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-100">
                 {processedLists.active.length} Live
             </span>
         </div>
@@ -155,7 +155,7 @@ const ManageInternships = () => {
       {/* --- INACTIVE SECTION --- */}
       <section>
         <div className="flex items-center gap-3 mb-6 px-2">
-            <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">Inactive / Hidden</h2>
+            <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">Inactive Internships</h2>
             <div className="h-[1px] flex-1 bg-slate-100"></div>
             <span className="text-[10px] font-bold bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full border border-slate-200">
                 {processedLists.inactive.length} Hidden

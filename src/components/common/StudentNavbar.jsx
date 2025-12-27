@@ -98,7 +98,7 @@ const StudentNavbar = () => {
           <div className="flex items-center space-x-4 lg:space-x-8 shrink-0">
             
             {/* System Actions */}
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
                 <button className="relative p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-xl transition-all active:scale-90">
                     <Bell size={20} />
                     <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
@@ -106,7 +106,7 @@ const StudentNavbar = () => {
                 <button className="hidden sm:block p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-xl transition-all">
                     <MessageSquare size={20} />
                 </button>
-            </div>
+            </div> */}
 
             {/* Profile Menu */}
             <Menu as="div" className="relative">
@@ -133,13 +133,13 @@ const StudentNavbar = () => {
                 leaveTo="transform opacity-0 scale-95 translate-y-2"
               >
                 <Menu.Items className="absolute right-0 mt-4 w-64 origin-top-right bg-white rounded-[24px] shadow-2xl ring-1 ring-slate-200 focus:outline-none p-2 border border-slate-100 overflow-hidden">
-                  <div className="px-5 py-5 border-b border-slate-50 mb-2">
+                  {/* <div className="px-5 py-5 border-b border-slate-50 mb-2">
                     <div className="flex items-center gap-2 mb-1.5">
                         <ShieldCheck size={12} className="text-indigo-600" />
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Academic Access</p>
                     </div>
                     <p className="text-xs font-bold text-slate-900 truncate">{user?.email}</p>
-                  </div>
+                  </div> */}
                   
                   <Menu.Item>
                     {({ active }) => (

@@ -85,28 +85,46 @@ const ViewApplications = () => {
     }
   };
 
-  const handleCompleteSubmission = async (e) => {
-    if (e) e.preventDefault();
-    setProcessingId(selectedApp._id);
+const handleCompleteSubmission = async (e) => {
+  if (e) e.preventDefault();
+  
+  // Start loading state
+  setProcessingId(selectedApp._id);
 
+  try {
+    // 1. Create FormData object (Standard for file uploads)
     const formData = new FormData();
+    
+    // 2. ONLY append if a file was selected. 
+    // Key must be 'certificate' to match your backend upload.single('certificate')
     if (certificateFile) {
       formData.append('certificate', certificateFile);
     }
 
-    try {
-      await api.put(`/startup/applications/mark-application-complete/${selectedApp._id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+    // 3. Make the API call
+    // Note: Do NOT manually set Content-Type header; 
+    // Axios + Browser will automatically add the boundary for FormData.
+    const res = await api.put(
+      `/startup/applications/mark-application-complete/${selectedApp._id}`, 
+      formData
+    );
+
+    if (res.status === 200) {
+      // Success feedback
       setIsCompleteModalOpen(false);
       setCertificateFile(null);
-      fetchApplications();
-    } catch (err) {
-      alert("Failed to finalize application status.");
-    } finally {
-      setProcessingId(null);
+      setSelectedApp(null);
+      
+      // Refresh the main list to show status as COMPLETED
+      fetchApplications(); 
     }
-  };
+  } catch (err) {
+    console.error("Fronend Upload Error:", err);
+    alert(err.response?.data?.message || "Verification system failed to issue certificate.");
+  } finally {
+    setProcessingId(null);
+  }
+};
 
   const filteredData = useMemo(() => {
     return applications.filter(app => {
@@ -134,14 +152,15 @@ const ViewApplications = () => {
              <div className="p-2.5 bg-blue-600 rounded-xl text-white shadow-lg">
                 <Users size={24} />
              </div>
-             <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase">Pipeline Console</h1>
+             <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase">All Applicants </h1>
           </div>
         </div>
 
         <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
-           <StatPill label="Pool" count={applications.length} color="blue" />
+           <StatPill label="TOTAL" count={applications.length} color="blue" />
            <StatPill label="Shortlisted" count={applications.filter(a=>a.status==='SHORTLISTED').length} color="indigo" />
            <StatPill label="Selected" count={applications.filter(a=>a.status==='SELECTED').length} color="emerald" />
+            <StatPill label="Rejected" count={applications.filter(a=>a.status==='REJECTED').length} color="red" />
         </div>
       </div>
 
@@ -332,11 +351,34 @@ const ViewApplications = () => {
                 <p className="text-sm text-slate-500 mt-2 font-medium px-4">Upload the final certificate for {selectedApp.studentId?.fullName}. This is optional.</p>
                 
                 <form onSubmit={handleCompleteSubmission} className="w-full mt-8 space-y-6">
-                  <label className="block w-full border-2 border-dashed border-slate-200 rounded-[2rem] p-10 hover:border-blue-400 transition-all cursor-pointer group bg-slate-50/50">
-                    <input type="file" className="hidden" accept=".pdf" onChange={(e) => setCertificateFile(e.target.files[0])} />
-                    <Upload className="mx-auto text-slate-300 group-hover:text-blue-500 mb-4" size={36} />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{certificateFile ? certificateFile.name : 'Select PDF (Optional)'}</p>
-                  </label>
+                 <label className="block w-full border-2 border-dashed border-blue-200 rounded-[2rem] p-10 hover:border-blue-500 transition-all cursor-pointer group bg-blue-50/20">
+  <input 
+    type="file" 
+    className="hidden" 
+    accept=".pdf,.png,.jpg" 
+    onChange={(e) => setCertificateFile(e.target.files[0])} 
+  />
+  
+  <div className="flex flex-col items-center">
+    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-blue-500 mb-4 group-hover:scale-110 transition-transform">
+      <Upload size={24} />
+    </div>
+    
+    {certificateFile ? (
+      <div className="text-center">
+        <p className="text-xs font-bold text-slate-900 uppercase tracking-widest truncate max-w-[200px]">
+          {certificateFile.name}
+        </p>
+        <p className="text-[10px] text-blue-600 font-bold mt-1 uppercase tracking-tight">Ready for deployment</p>
+      </div>
+    ) : (
+      <div className="text-center">
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Upload Accomplishment Certificate</p>
+        <p className="text-[9px] text-slate-300 mt-1 uppercase">PDF or Image (Optional)</p>
+      </div>
+    )}
+  </div>
+</label>
                   <div className="flex gap-4">
                     <button type="submit" disabled={processingId === selectedApp._id} className="flex-1 bg-slate-900 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-xl flex justify-center items-center gap-2 disabled:opacity-50">
                        {processingId === selectedApp._id ? <Loader2 className="animate-spin" size={18} /> : <ShieldCheck size={18} />}
@@ -355,12 +397,25 @@ const ViewApplications = () => {
 
 /* --- SUB-COMPONENTS --- */
 
-const StatPill = ({ label, count, color }) => (
-    <div className="px-6 py-1 text-center border-r last:border-0 border-slate-100 min-w-[120px]">
-        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">{label}</p>
-        <p className={`text-lg font-black ${color === 'blue' ? 'text-blue-600' : 'text-emerald-600'}`}>{count}</p>
-    </div>
-);
+const StatPill = ({ label, count, color }) => {
+    const colors = { 
+      blue: "text-blue-600", 
+      indigo: "text-indigo-600", 
+      emerald: "text-emerald-600",
+      red: "text-rose-600" // 👈 Added professional red shade
+    };
+
+    return (
+        <div className="px-6 py-1 text-center border-r last:border-0 border-slate-100 min-w-[110px]">
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">
+              {label}
+            </p>
+            <p className={`text-lg font-black ${colors[color] || 'text-slate-900'}`}>
+              {count < 10 ? `0${count}` : count}
+            </p>
+        </div>
+    );
+};
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -414,7 +469,7 @@ const SocialLink = ({ icon: Icon, label, url }) => (
 const EmptyState = () => (
     <div className="py-40 text-center flex flex-col items-center bg-white rounded-[3rem]">
         <Building2 size={64} className="text-slate-100 mb-6" />
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Hiring pipeline currently empty</p>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Applicants list currently empty</p>
     </div>
 );
 

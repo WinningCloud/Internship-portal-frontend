@@ -195,17 +195,18 @@ const InternshipCard = ({ data, navigate }) => {
     >
       <div>
         <div className="flex justify-between items-start mb-6">
-          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm overflow-hidden p-2">
-            <img
-              src={
-                data.startupLogo ||
-                "https://cdn-icons-png.flaticon.com/512/281/281764.png"
-              }
-              alt="logo"
-              className="w-full h-full object-contain"
-            />
-          </div>
-          <Bookmark size={16} className="text-slate-400" />
+          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm overflow-hidden shrink-0">
+  <img
+    src={
+      data.startupLogo ||
+      "https://cdn-icons-png.flaticon.com/512/281/281764.png"
+    }
+    alt="logo"
+    // object-cover fills the entire square by cropping edges if necessary
+    className="w-full h-full object-cover" 
+  />
+</div>
+          {/* <Bookmark size={16} className="text-slate-400" /> */}
         </div>
 
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
@@ -219,9 +220,12 @@ const InternshipCard = ({ data, navigate }) => {
           <div className="flex items-center text-xs font-bold text-slate-500 gap-2">
             <MapPin size={14} /> {data.location}
           </div>
-          <div className="flex items-center text-xs font-bold text-slate-500 gap-2">
-            <Banknote size={14} /> ₹{data.stipend || "Unpaid"} / month
-          </div>
+          <div className="space-y-1">
+   {/* <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none">Remuneration</p> */}
+   <p className={`text-xs font-black tracking-tight ${data.stipend > 0 ? 'text-slate-700' : 'text-slate-500 italic'}`}>
+      {data.stipend && data.stipend > 0 ? `₹${data.stipend} / month` : "Unpaid"}
+   </p>
+</div>
           <div className="flex items-center text-xs font-bold text-slate-500 gap-2">
             <Calendar size={14} /> {data.duration}
           </div>

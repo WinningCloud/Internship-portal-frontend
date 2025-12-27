@@ -33,7 +33,7 @@ const StudentApplications = () => {
   };
 
   const handleDeleteApplication = async (id) => {
-    if (!window.confirm("Confirm withdrawal from this internship cycle?")) return;
+    if (!window.confirm("Confirm withdrawal from this internship?")) return;
     try {
       await api.delete(`/student/application/delete-application/${id}`);
       setApplications(prev => prev.filter(app => app._id !== id));
@@ -74,16 +74,16 @@ const StudentApplications = () => {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Application Ledger</h1>
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <h1 className="text-xl font-black text-slate-900 uppercase tracking-tighter">My Application</h1>
+                {/* <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> */}
               </div>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Activity Tracking System</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Track your applied internships status</p>
             </div>
           </div>
 
           <div className="hidden xl:flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100 gap-1">
              <StatusToggle label="Active" count={applications.length} active />
-             <StatusToggle label="Selected" count={applications.filter(a=>a.status === 'ACCEPTED').length} />
+             {/* <StatusToggle label="Selected" count={applications.filter(a=>a.status === 'ACCEPTED').length} /> */}
           </div>
         </div>
 
@@ -101,7 +101,7 @@ const StudentApplications = () => {
 
       {/* --- 2. CONTROLS AREA --- */}
       <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar shrink-0 px-1">
-         <FilterBtn label="All Portal Records" active={statusFilter === "ALL"} onClick={() => setStatusFilter("ALL")} />
+         <FilterBtn label="All Applications" active={statusFilter === "ALL"} onClick={() => setStatusFilter("ALL")} />
          {["APPLIED", "REVIEWING", "ACCEPTED", "REJECTED"].map(s => (
             <FilterBtn key={s} label={s} active={statusFilter === s} onClick={() => setStatusFilter(s)} />
          ))}
@@ -164,23 +164,20 @@ const StudentApplications = () => {
                 <div className="space-y-4">
                     <div className="flex items-center gap-2 border-l-4 border-indigo-600 pl-4 py-1">
                         <Info size={16} className="text-slate-400" />
-                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Procedural Narrative</h3>
+                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Internship description</h3>
                     </div>
                     <p className="text-sm text-slate-500 font-bold leading-relaxed bg-slate-50/50 p-8 rounded-[2rem] border border-slate-100 whitespace-pre-line shadow-inner">{selectedApp.internshipId?.description}</p>
                 </div>
               </div>
 
               <div className="p-8 border-t border-slate-100 flex items-center justify-between gap-4 bg-white shrink-0">
-                  <div className="flex-1 bg-rose-50 border border-rose-100 rounded-2xl p-4 flex items-center justify-between">
-                     <div className="flex items-center gap-3">
-                        <Trash2 size={20} className="text-rose-500" />
-                        <p className="text-[10px] font-black text-rose-700 uppercase tracking-widest leading-none">Terminate ongoing application process</p>
-                     </div>
+                  <div className="  rounded-2xl p-4 flex items-center justify-between">
+                     
                      <button 
                         onClick={() => handleDeleteApplication(selectedApp._id)}
                         className="px-6 py-2.5 bg-white border border-rose-200 text-rose-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all shadow-sm active:scale-95"
                     >
-                        Execute Withdrawal
+                        Withdraw application
                      </button>
                   </div>
                   <button onClick={() => setSelectedApp(null)} className="w-32 py-5 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-indigo-600 transition-all shadow-xl active:scale-95">Dismiss</button>
@@ -222,7 +219,7 @@ const ApplicationRow = ({ app, onView, index }) => (
 
         <div className="flex items-center gap-3 w-full lg:w-auto shrink-0">
             <button onClick={onView} className="flex-1 lg:flex-none px-8 py-3 bg-slate-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg active:scale-95">
-                Audit Details
+                Details
             </button>
         </div>
     </motion.div>
