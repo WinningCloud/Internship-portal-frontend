@@ -135,9 +135,9 @@ const StartupProfile = () => {
       {/* --- HEADER --- */}
       <div className="mb-10 pt-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.2em] mb-2">
+          {/* <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.2em] mb-2">
              <ShieldCheck size={14} /> Official Startup Profile
-          </div>
+          </div> */}
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Organization Console</h1>
         </div>
 

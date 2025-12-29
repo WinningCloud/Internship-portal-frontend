@@ -76,9 +76,9 @@ const CreateInternship = () => {
             <ArrowLeft size={20} />
           </button>
           <div>
-            <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.2em] mb-0.5">
+            {/* <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.2em] mb-0.5">
                <ShieldCheck size={12} /> Recruitment Module
-            </div>
+            </div> */}
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">Create New Internship Opportunity</h1>
           </div>
         </div>

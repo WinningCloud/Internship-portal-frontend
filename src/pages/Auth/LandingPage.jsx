@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import cresLogo from '../../assets/cres.png'
 import { 
   Rocket, GraduationCap, Building2, ShieldCheck, 
   ArrowRight, Globe, Zap, Users, TrendingUp,
@@ -25,17 +26,26 @@ const LandingPage = () => {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-20 flex items-center px-4 md:px-8">
         <div className="w-full max-w-[1600px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-10">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-slate-950 rounded-xl flex items-center justify-center text-white shadow-xl shadow-slate-200">
-                <Rocket size={22} />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-xl font-black tracking-tighter uppercase text-slate-900">
-                  CIIC <span className="text-blue-600">Portal</span>
-                </span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Institutional Deployment</span>
-              </div>
-            </div>
+           <div className="flex items-center gap-3">
+  {/* The Logo Box - Styled as a sharp, modular component */}
+  <div className="w-11 h-11 bg-white border border-slate-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden p-1.0 group-hover:border-blue-600 transition-colors duration-300">
+    <img 
+      src={cresLogo} 
+      alt="CIIC Logo" 
+      className="w-full h-full object-contain" 
+    />
+  </div>
+
+  {/* Brand Typography */}
+  <div className="flex flex-col leading-none">
+    <span className="text-xl font-black tracking-tighter uppercase text-slate-900">
+      CIIC <span className="text-blue-600">Portal</span>
+    </span>
+    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+      Internship Portal
+    </span>
+  </div>
+</div>
             
             <div className="hidden xl:flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-slate-400">
               <a href="#stats" className="hover:text-blue-600 transition-all">Impact</a>
@@ -67,9 +77,9 @@ const LandingPage = () => {
         
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
           <motion.div {...FADE_UP} className="lg:col-span-7">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-950 text-white rounded-lg text-[9px] font-black uppercase tracking-[0.25em] mb-10 shadow-xl">
+            {/* <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-950 text-white rounded-lg text-[9px] font-black uppercase tracking-[0.25em] mb-10 shadow-xl">
               <BadgeCheck size={14} className="text-blue-400" /> Vetted Incubator Hub
-            </div>
+            </div> */}
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 leading-[0.9] uppercase mb-10">
               Talent Meets <br />
               <span className="text-blue-600">Enterprise.</span>
@@ -87,10 +97,10 @@ const LandingPage = () => {
                 Secure Internship <ArrowUpRight size={18} />
               </button>
               <Link 
-                to="/register/student"
+                to="/login/startup"
                 className="w-full sm:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-50 transition-all flex justify-center items-center"
               >
-                Request Enrollment
+                Hire talent
               </Link>
             </div>
           </motion.div>
@@ -129,8 +139,8 @@ const LandingPage = () => {
       {/* --- 4. PATHWAY SELECTION --- */}
       <section id="pathways" className="py-32 px-6 bg-slate-50/50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center mb-24">
-            <h2 className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4">Unified Registry</h2>
-            <h3 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tighter uppercase leading-none">Access The Dashboard</h3>
+            <h2 className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4">GET STARTED</h2>
+            <h3 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tighter uppercase leading-none">Access The Portal</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-[1400px] mx-auto">
@@ -196,11 +206,11 @@ const LandingPage = () => {
                 <p className="text-sm text-slate-500 font-bold leading-relaxed pr-8">
                   Providing a high-density professional environment for the next generation of engineers and entrepreneurs at Crescent University.
                 </p>
-                <div className="flex items-center gap-3">
-                    <SocialCircle icon={Linkedin} />
-                    <SocialCircle icon={Instagram} />
-                    <SocialCircle icon={Twitter} />
-                </div>
+               <div className="flex items-center gap-3">
+    <SocialCircle icon={Linkedin} href="https://www.linkedin.com/company/ciicofficial" />
+    <SocialCircle icon={Instagram} href="https://www.instagram.com/ciicupdates" />
+    <SocialCircle icon={Twitter} href="https://x.com/ciicupdates" />
+</div>
             </div>
 
             <div className="lg:col-span-2 space-y-6">
@@ -276,10 +286,19 @@ const MilestoneItem = ({ date, title, body }) => (
     </div>
 );
 
-const SocialCircle = ({ icon: Icon }) => (
-    <div className="p-3 bg-white border border-slate-200 text-slate-400 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-all shadow-sm cursor-pointer active:scale-90">
-        <Icon size={18} />
-    </div>
+const SocialCircle = ({ icon: Icon, href = "#" }) => (
+  <motion.a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    whileHover={{ y: -4, scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 
+               hover:text-blue-600 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/10 
+               transition-colors duration-300 group cursor-pointer"
+  >
+    <Icon size={18} className="group-hover:rotate-[8deg] transition-transform duration-300" />
+  </motion.a>
 );
 
 export default LandingPage;

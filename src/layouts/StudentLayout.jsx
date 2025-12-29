@@ -9,11 +9,11 @@ const StudentLayout = () => {
       <StudentNavbar />
       
       {/* Content Area */}
-      <main className="pt-32 pb-12 px-6"> {/* Keep padding-top at 32 (128px) */}
+      <main className="pt-12 pb-12  px-6"> {/* Keep padding-top at 32 (128px) */}
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
-    className="max-w-7xl mx-auto"
+    // className="max-w-7xl mx-auto"
   >
     <Outlet />
   </motion.div>

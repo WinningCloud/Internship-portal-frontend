@@ -266,7 +266,7 @@ const handleCompleteSubmission = async (e) => {
                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">{studentProfile.studentId?.fullName}</h2>
                     <div className="flex items-center gap-3 mt-2">
                        <StatusBadge status={studentProfile.status} />
-                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CIIC Verified Profile</span>
+                       {/* <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CIIC Verified Profile</span> */}
                     </div>
                   </div>
                 </div>
@@ -317,8 +317,8 @@ const handleCompleteSubmission = async (e) => {
                 <div className="lg:col-span-4 space-y-8">
                    <ModuleCard title="Digital Channels" icon={Globe}>
                       <div className="space-y-3">
-                        <SocialLink icon={Linkedin} label="LinkedIn Network" url={studentProfile.studentId?.linkedInUrl} />
-                        <SocialLink icon={Github} label="GitHub Registry" url={studentProfile.studentId?.githubUrl} />
+                        <SocialLink icon={Linkedin} label="LinkedIn Profile" url={studentProfile.studentId?.linkedInUrl} />
+                        <SocialLink icon={Github} label="GitHub Profile" url={studentProfile.studentId?.githubUrl} />
                         <SocialLink icon={Globe} label="Public Portfolio" url={studentProfile.studentId?.portfolioUrl} />
                       </div>
                    </ModuleCard>

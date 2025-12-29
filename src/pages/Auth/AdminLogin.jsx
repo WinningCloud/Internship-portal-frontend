@@ -22,7 +22,7 @@ const AdminLogin = () => {
       const { token, role, id } = res.data;
       if (role !== 'CIIC' && role !== 'STUDENT_ADMIN') throw new Error("Restricted access.");
       login(token, role, id);
-      navigate(role === 'CIIC' ? "/ciic/dashboard" : "/student-admin/dashboard");
+      navigate("/admin/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Admin login failed");
     } finally { setLoading(false); }

@@ -122,7 +122,7 @@ const StartupSidebar = () => {
         
         <div className="px-3 mb-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[9px] uppercase tracking-[0.2em] mb-3">
-                <ShieldCheck size={12} /> Partner Verified
+                <ShieldCheck size={12} /> CIIC Verified
             </div>
             
             <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
@@ -153,7 +153,7 @@ const StartupSidebar = () => {
         </button>
 
         <p className="text-[9px] text-center text-slate-300 mt-4 font-bold tracking-widest uppercase">
-          CIIC Portal v2.4.0
+          CIIC Portal v1.0.0
         </p>
       </div>
     </div>

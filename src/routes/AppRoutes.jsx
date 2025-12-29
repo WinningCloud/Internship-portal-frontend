@@ -20,6 +20,17 @@ import StudentLogin from '../pages/Auth/StudentLogin';
 import AdminLogin from '../pages/Auth/AdminLogin';
 import StudentRegister from '../pages/Auth/StudentRegister'
 import StudentApplications from '../pages/student/StudentApplications';
+import StudentCertificates from '../pages/student/StudentCertificates'
+
+import AdminLayout from '../layouts/AdminLayout';
+import Dashboard from '../pages/admin/Dashboard';
+import Startups from '../pages/admin/Startups';
+import Internships from '../pages/admin/Internships';
+import Students from '../pages/admin/Students';
+import Applications from '../pages/admin/Applications';
+import Analytics from '../pages/admin/Analytics';
+import Reports from '../pages/admin/Reports';
+import Settings from '../pages/admin/Settings';
 
 
 
@@ -53,9 +64,23 @@ const AppRoutes = () => {
                   <Route path="/student/internships/:id" element={<InternshipDetails />} />
                   
                   <Route path="/student/applications" element={<StudentApplications />} />
-              
+                  <Route path="/student/certificates" element={<StudentCertificates />} />
                   <Route path="/student/profile" element={<StudentProfile />} /> 
                 </Route>
+            </Route>
+
+
+            <Route element={<ProtectedRoute allowedRoles={['CIIC']} />}>
+              <Route element={<AdminLayout />}>
+                <Route path="/admin/dashboard" element={<Dashboard />} />
+                <Route path="/admin/startups" element={<Startups />} />
+                <Route path="/admin/internships" element={<Internships />} />
+                <Route path="/admin/students" element={<Students />} />
+                <Route path="/admin/applications" element={<Applications />} />
+                <Route path="/admin/analytics" element={<Analytics />} />
+                <Route path="/admin/reports" element={<Reports />} />
+                <Route path="/admin/settings" element={<Settings />} />
+              </Route>
             </Route>
 
             
