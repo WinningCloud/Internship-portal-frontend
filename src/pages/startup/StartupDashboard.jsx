@@ -118,7 +118,7 @@ const StartupDashboard = () => {
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-100 flex justify-between items-center">
             <h3 className="font-bold text-slate-800">Recent Applicants</h3>
-            <button onClick={() => navigate('/startup/internships')} className="text-blue-600 text-xs font-bold hover:underline">View All Pipeline</button>
+            <button onClick={() => navigate('/startup/internships')} className="text-blue-600 text-xs font-bold hover:underline">View All Applicants</button>
           </div>
           <div className="divide-y divide-slate-50">
             {recentApplicants.length > 0 ? recentApplicants.map((app) => (
@@ -195,7 +195,7 @@ const StatCard = ({ label, value, icon: Icon, color }) => (
 const HealthItem = ({ label, status, count }) => (
   <div className="flex justify-between items-center">
     <div>
-      <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">{label}</p>
+      <p className="text-xs font-bold text-slate-800  tracking-tight">{label}</p>
       <p className="text-[10px] font-bold text-emerald-500 uppercase">{status}</p>
     </div>
     <span className="text-xs font-black text-slate-400">{count} Posts</span>

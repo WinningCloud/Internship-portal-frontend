@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 
 const AdminLayout = () => {
     return (
-        <div className="min-h-screen bg-[#F6F2ED] font-sans text-gray-900 flex overflow-hidden">
+        <div className="min-h-screen bg-white font-sans text-gray-900 flex overflow-hidden">
             {/* Sidebar stays fixed at 64 (256px) */}
             <Sidebar />
 

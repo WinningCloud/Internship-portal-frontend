@@ -9,7 +9,8 @@ import {
     BarChart3,
     FileBarChart,
     Settings,
-    LogOut
+    LogOut,
+    AlertCircle
 } from 'lucide-react';
 
 import { AuthContext } from '../../context/AuthContext'; // Import your AuthContext
@@ -27,7 +28,8 @@ const Sidebar = () => {
         { icon: FileText, label: 'Applications', path: '/admin/applications' },
         { icon: BarChart3, label: 'Analytics', path: '/admin/analytics' },
         { icon: FileBarChart, label: 'Reports', path: '/admin/reports' },
-        { icon: Settings, label: 'Settings', path: '/admin/settings' },
+        // { icon: Settings, label: 'Settings', path: '/admin/settings' },
+        { icon: AlertCircle, label: 'Alerts', path: '/admin/alerts' },
     ];
 
     // Backend Logout Logic

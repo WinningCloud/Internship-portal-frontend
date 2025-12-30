@@ -104,6 +104,9 @@ const StudentProfile = () => {
     </div>
   );
 
+  const DEPARTMENTS = ["CSE", "IT", "ECE", "EEE", "Mechanical", "Civil", "Aeronautical", "BCA", "B.Sc", "Architecture"];
+
+
   return (
     <div className="h-[calc(100vh-100px)] flex flex-col font-sans max-w-[1600px] mx-auto px-6 overflow-hidden">
       
@@ -167,28 +170,85 @@ const StudentProfile = () => {
                 <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
                   
                   {activeTab === 'academic' && (
-                    <div className="space-y-10">
-                       <SectionHeader icon={GraduationCap} title="University Credentials" />
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                         <InputField label="Official Full Name" value={profile.fullName} onChange={(v) => setProfile({...profile, fullName: v})} placeholder="Full legal name" />
-                         <InputField label="Roll / Registration Number" value={profile.registerNumber} onChange={(v) => setProfile({...profile, registerNumber: v})} placeholder="University identifier" />
-                         <InputField label="Field of Study" value={profile.department} onChange={(v) => setProfile({...profile, department: v})} placeholder="e.g. IT, Mechanical" />
-                         <InputField label="Current Degree/Course" value={profile.course} onChange={(v) => setProfile({...profile, course: v})} placeholder="e.g. B.Tech" />
-                         
-                         <div className="space-y-2">
-                           <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1 leading-none">Phase of Study</label>
-                           <div className="relative group">
-                             <select className="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all appearance-none cursor-pointer"
-                               value={profile.yearOfStudy} onChange={(e) => setProfile({...profile, yearOfStudy: e.target.value})}>
-                               {[1,2,3,4].map(y => <option key={y} value={y}>Undergraduate Year {y}</option>)}
-                             </select>
-                             <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 rotate-90" size={18} />
-                           </div>
-                         </div>
-                         <InputField label="Cumulative CGPA" type="number" value={profile.cgpa} onChange={(v) => setProfile({...profile, cgpa: v})} placeholder="e.g. 9.1" />
-                       </div>
-                    </div>
-                  )}
+  <div className="space-y-10">
+    <SectionHeader icon={GraduationCap} title="University Credentials" />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      {/* 1. Official Full Name */}
+      <InputField 
+        label="Official Full Name" 
+        value={profile.fullName} 
+        onChange={(v) => setProfile({...profile, fullName: v})} 
+        placeholder="Full legal name" 
+      />
+
+      {/* 2. Roll / Registration Number */}
+      <InputField 
+        label="Roll / Registration Number" 
+        value={profile.registerNumber} 
+        onChange={(v) => setProfile({...profile, registerNumber: v})} 
+        placeholder="University identifier" 
+      />
+
+      {/* 3. Field of Study (UPDATED TO DROPDOWN FOR ANALYTICS) */}
+      <div className="space-y-2">
+        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1 leading-none">
+          Field of Study / Department
+        </label>
+        <div className="relative group">
+          <select 
+            className="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all appearance-none cursor-pointer"
+            value={profile.department} 
+            onChange={(e) => setProfile({...profile, department: e.target.value})}
+          >
+            <option value="">Select Department</option>
+            {["CSE", "IT", "ECE", "EEE", "MECHANICAL", "CIVIL", "AERONAUTICAL", "BCA", "BSC", "ARCHITECTURE", "OTHER"].map(dept => (
+              <option key={dept} value={dept}>{dept}</option>
+            ))}
+          </select>
+          <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 rotate-90 pointer-events-none" size={18} />
+        </div>
+      </div>
+
+      {/* 4. Current Degree/Course */}
+      <InputField 
+        label="Current Degree/Course" 
+        value={profile.course} 
+        onChange={(v) => setProfile({...profile, course: v})} 
+        placeholder="e.g. B.Tech Cyber Security" 
+      />
+      
+      {/* 5. Phase of Study */}
+      <div className="space-y-2">
+        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1 leading-none">
+          Phase of Study
+        </label>
+        <div className="relative group">
+          <select 
+            className="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all appearance-none cursor-pointer"
+            value={profile.yearOfStudy} 
+            onChange={(e) => setProfile({...profile, yearOfStudy: Number(e.target.value)})}
+          >
+            {[1, 2, 3, 4].map(y => (
+              <option key={y} value={y}>Undergraduate Year {y}</option>
+            ))}
+          </select>
+          <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 rotate-90 pointer-events-none" size={18} />
+        </div>
+      </div>
+
+      {/* 6. Cumulative CGPA */}
+      <InputField 
+        label="Cumulative CGPA" 
+        type="number" 
+        value={profile.cgpa} 
+        onChange={(v) => setProfile({...profile, cgpa: v})} 
+        placeholder="e.g. 9.1" 
+      />
+
+    </div>
+  </div>
+)}
 
                   {activeTab === 'info' && (
                     <div className="space-y-10">

@@ -30,7 +30,8 @@ import Students from '../pages/admin/Students';
 import Applications from '../pages/admin/Applications';
 import Analytics from '../pages/admin/Analytics';
 import Reports from '../pages/admin/Reports';
-import Settings from '../pages/admin/Settings';
+// import Settings from '../pages/admin/Settings';
+import Alerts from '../pages/admin/Alerts';
 
 
 
@@ -79,7 +80,7 @@ const AppRoutes = () => {
                 <Route path="/admin/applications" element={<Applications />} />
                 <Route path="/admin/analytics" element={<Analytics />} />
                 <Route path="/admin/reports" element={<Reports />} />
-                <Route path="/admin/settings" element={<Settings />} />
+                <Route path="/admin/alerts" element={<Alerts />} />
               </Route>
             </Route>
 

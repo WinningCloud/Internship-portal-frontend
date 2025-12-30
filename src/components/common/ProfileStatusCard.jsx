@@ -45,9 +45,9 @@ const ProfileStatusCard = () => {
             <ShieldCheck size={24} />
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Identity Status</p>
+            {/* <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Identity Status</p> */}
             <p className="text-sm font-black text-slate-900 uppercase mt-1">
-              {profile?.isVerified ? "CIIC Verified" : "Verified User"}
+              Profile status
             </p>
           </div>
         </div>
@@ -101,7 +101,7 @@ const ProfileStatusCard = () => {
       {/* --- BOTTOM: ACTION --- */}
       <div className="mt-10 space-y-4">
         <h3 className="text-xl font-bold text-slate-900 leading-tight uppercase tracking-tighter">
-          Maintain your <br /> industry dossier.
+          Update your <br /> public profile.
         </h3>
         <button 
           onClick={() => navigate('/student/profile')}

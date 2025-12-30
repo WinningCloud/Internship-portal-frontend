@@ -68,7 +68,7 @@ const StudentRegister = () => {
         />
 
         <div className="relative z-10">
-          <motion.div 
+          {/* <motion.div 
             initial={{ opacity: 0, y: -20 }} 
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center space-x-3 mb-12"
@@ -77,7 +77,7 @@ const StudentRegister = () => {
               <GraduationCap className="w-8 h-8 text-white" />
             </div>
             <span className="text-2xl font-black tracking-tighter italic">CRESCENT<span className="text-indigo-200 not-italic font-light ml-1">PORTAL</span></span>
-          </motion.div>
+          </motion.div> */}
           
           <motion.h1 
             initial={{ opacity: 0, x: -30 }} 

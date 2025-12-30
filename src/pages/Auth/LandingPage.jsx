@@ -119,7 +119,7 @@ const LandingPage = () => {
                 />
                 <div className="absolute top-8 right-8 bg-white border border-slate-200 p-4 rounded-3xl shadow-xl flex items-center gap-3">
                    <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><Star fill="currentColor" size={16} /></div>
-                   <p className="text-[10px] font-black uppercase text-slate-400 leading-tight tracking-widest">Industry <br /><span className="text-slate-900">Rated Excellent</span></p>
+                   <p className="text-[10px] font-black uppercase text-slate-400 leading-tight tracking-widest">CIIC <br /><span className="text-slate-900">Verified companies</span></p>
                 </div>
              </div>
           </motion.div>
@@ -145,18 +145,18 @@ const LandingPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-[1400px] mx-auto">
           <ModuleCard 
-            icon={GraduationCap} title="STUDENTS" highlight="Vanguard Edition" 
-            desc="Explore high-growth tracks, maintain your professional dossier and claim verified industry rewards."
+            icon={GraduationCap} title="STUDENTS" 
+            desc="Explore high-growth tracks, maintain your professional profile and claim verified industry opportunities."
             btn="Student Login" link="/login/student" color="blue"
           />
           <ModuleCard 
-            icon={Building2} title="Founders" highlight="Startup Nexus" 
-            desc="Publish roles, monitor automated pipelines and secure top crescentian's talent with zero overhead."
+            icon={Building2} title="Founders" 
+            desc="Publish roles, monitor applicants and secure top crescentian's talent with zero overhead."
             btn="Startup Login" link="/login/startup" color="indigo"
           />
           <ModuleCard 
-            icon={ShieldCheck} title="Council" highlight="Central Admin" 
-            desc="Maintain institutional integrity, oversight recruitment stats and regulate ecosystem protocols."
+            icon={ShieldCheck} title="Admin" 
+            desc="Maintain institutional integrity, oversight recruitment stats and regulate startups."
             btn="Admin Login" link="/login/admin" color="slate"
           />
         </div>
@@ -196,52 +196,65 @@ const LandingPage = () => {
       </section>
 
       {/* --- 6. REDESIGNED PROFESSIONAL FOOTER --- */}
-      <footer className="border-t border-slate-100 bg-[#FBFBFE] py-24 px-8 overflow-hidden relative">
-         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24 relative z-10">
-            <div className="lg:col-span-4 space-y-6">
+    <footer className="border-t border-slate-100 bg-[#FBFBFE] py-24 px-8 overflow-hidden relative">
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24 relative z-10">
+        
+        {/* Brand Section */}
+        <div className="lg:col-span-5 space-y-8">
+            <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                   <Rocket className="text-blue-600" size={32} />
-                   <h4 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none italic-off">CIIC</h4>
+                    <Rocket className="text-blue-600" size={32} />
+                    <h4 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none">CIIC</h4>
                 </div>
-                <p className="text-sm text-slate-500 font-bold leading-relaxed pr-8">
-                  Providing a high-density professional environment for the next generation of engineers and entrepreneurs at Crescent University.
+                <p className="text-sm text-slate-500 font-bold leading-relaxed max-w-sm">
+                    Providing a high-density professional environment for the next generation of engineers and entrepreneurs at Crescent University.
                 </p>
-               <div className="flex items-center gap-3">
-    <SocialCircle icon={Linkedin} href="https://www.linkedin.com/company/ciicofficial" />
-    <SocialCircle icon={Instagram} href="https://www.instagram.com/ciicupdates" />
-    <SocialCircle icon={Twitter} href="https://x.com/ciicupdates" />
-</div>
             </div>
-
-            <div className="lg:col-span-2 space-y-6">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Portals</p>
-                <ul className="space-y-4 text-xs font-bold text-slate-900 uppercase tracking-widest">
-                   <li className="hover:text-blue-600 cursor-pointer">Startup Suite</li>
-                   <li className="hover:text-blue-600 cursor-pointer">Candidate Track</li>
-                   <li className="hover:text-blue-600 cursor-pointer">Registry Auth</li>
-                </ul>
+            <div className="flex items-center gap-3">
+                <SocialCircle icon={Linkedin} href="https://www.linkedin.com/company/ciicofficial" />
+                <SocialCircle icon={Instagram} href="https://www.instagram.com/ciicupdates" />
+                <SocialCircle icon={Twitter} href="https://x.com/ciicupdates" />
             </div>
+        </div>
 
-            <div className="lg:col-span-3 space-y-6">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Ecosystem</p>
-                <ul className="space-y-4 text-xs font-bold text-slate-900 uppercase tracking-widest">
-                   <li className="hover:text-blue-600 cursor-pointer">Incubation Policy</li>
-                   <li className="hover:text-blue-600 cursor-pointer">Internship Guide</li>
-                   <li className="hover:text-blue-600 cursor-pointer">Institutional Access</li>
-                </ul>
+        {/* Location Section - Fills the "Empty" space professionally */}
+        <div className="lg:col-span-4 space-y-6">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Headquarters</p>
+            <div className="space-y-4">
+                <div className="space-y-1">
+                    <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Crescent University Campus</p>
+                    <p className="text-[11px] font-bold text-slate-500 uppercase leading-loose tracking-wider">
+                        GST Road, Vandalur, Chennai <br />
+                        Tamil Nadu, India - 600048
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Operations: Mon - Sat / 09:00 - 18:00</p>
+                </div>
             </div>
+        </div>
 
-            <div className="lg:col-span-3 bg-white border border-slate-200 rounded-[2.5rem] p-8 text-center flex flex-col justify-center gap-4">
-                 <p className="text-sm font-black text-slate-900 uppercase leading-tight">Need assistance <br /> in registration?</p>
-                 <a href="mailto:support@ciic.res.in" className="bg-slate-900 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all">Support Desk</a>
-            </div>
-         </div>
+        {/* Action Card */}
+        <div className="lg:col-span-3 bg-white border border-slate-200 rounded-[2.5rem] p-8 text-center flex flex-col justify-center gap-4 shadow-sm">
+            <p className="text-sm font-black text-slate-900 uppercase leading-tight">Need assistance <br /> in registration?</p>
+            <a href="mailto:support@ciic.res.in" className="bg-slate-900 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all">Support Desk</a>
+        </div>
+    </div>
 
-         <div className="max-w-7xl mx-auto pt-8 border-t border-slate-200/50 flex flex-col md:row items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] relative z-10">
+    {/* Bottom Bar */}
+    <div className="max-w-7xl mx-auto pt-8 border-t border-slate-200/50 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] relative z-10">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
             <p>© 2025 Crescent Innovation & Incubation Council</p>
-            <p>Designed for Professional Deployment</p>
-         </div>
-      </footer>
+            <div className="hidden md:block w-px h-3 bg-slate-200"></div>
+            <p className="text-slate-300">ISO 9001:2015 Certified</p>
+        </div>
+        <p className="flex items-center gap-2 text-blue-600/60">
+            <span className="w-1 h-1 rounded-full bg-blue-600"></span>
+            Professional Deployment Mode
+        </p>
+    </div>
+</footer>
     </div>
   );
 };

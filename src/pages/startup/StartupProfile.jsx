@@ -114,7 +114,7 @@ const StartupProfile = () => {
 
       setProfile(res.data.profile);
       setLogoFile(null);
-      setMessage({ type: 'success', text: 'Corporate identity synchronized successfully.' });
+      setMessage({ type: 'success', text: 'Profile updates successfully.' });
       setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     } catch (err) {
       setMessage({ type: 'error', text: 'Database synchronization failed.' });
@@ -236,7 +236,7 @@ const StartupProfile = () => {
           <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 flex items-start gap-4">
              <Info className="text-slate-400 shrink-0" size={18} />
              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-               Authorized modifications to this profile are instantly visible across your active career postings.
+               Modifications to this profile are instantly visible across your active career postings.
              </p>
           </div>
 

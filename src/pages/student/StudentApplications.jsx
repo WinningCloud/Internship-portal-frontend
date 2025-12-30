@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, MapPin, Calendar, Clock, Building2, 
-  ChevronRight, Loader2, Inbox, CheckCircle2, 
-  ShieldCheck, Briefcase, Banknote, Globe, 
-  Info, Hash, Trash2, Filter, X, Send
+  Loader2, Inbox, ShieldCheck, Briefcase, 
+  Banknote, Globe, Info, X, Trash2
 } from "lucide-react";
 import api from "../../api/axiosConfig.js";
 
@@ -63,32 +62,30 @@ const StudentApplications = () => {
   );
 
   return (
-    <div className="h-[calc(100vh-100px)] flex flex-col font-sans max-w-[1600px] mx-auto px-6 overflow-hidden bg-[#F8FAFC]">
+    // Responsive Height: Fixed on desktop, natural on mobile
+    <div className="min-h-screen lg:h-[calc(100vh-100px)] flex flex-col font-sans max-w-[1600px] mx-auto px-4 md:px-6 lg:overflow-hidden bg-[#F8FAFC]">
       
       {/* --- 1. SYSTEM HEADER MODULE --- */}
-      <div className="flex flex-col lg:flex-row gap-6 mb-6 shrink-0 pt-4">
-        <div className="flex-1 bg-white border border-slate-200 rounded-[2rem] p-5 flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-6">
-            <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-200">
-              <Briefcase size={28} />
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 mb-6 shrink-0 pt-4">
+        <div className="flex-1 bg-white border border-slate-200 rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-5 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-4 lg:gap-6">
+            <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-200">
+              <Briefcase size={20} className="lg:hidden" />
+              <Briefcase size={28} className="hidden lg:block" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-xl font-black text-slate-900 uppercase tracking-tighter">My Application</h1>
-                {/* <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> */}
-              </div>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Track your applied internships status</p>
+              <h1 className="text-lg lg:text-xl font-black text-slate-900 uppercase tracking-tighter">My Applications</h1>
+              <p className="text-[8px] lg:text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Live Tracking System</p>
             </div>
           </div>
 
-          <div className="hidden xl:flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100 gap-1">
-             <StatusToggle label="Active" count={applications.length} active />
-             {/* <StatusToggle label="Selected" count={applications.filter(a=>a.status === 'ACCEPTED').length} /> */}
+          <div className="hidden sm:flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100 gap-1">
+             <StatusToggle label="Active Logs" count={applications.length} active />
           </div>
         </div>
 
-        <div className="w-full lg:w-96 flex items-center gap-2">
-            <div className="relative flex-1 group">
+        <div className="w-full lg:w-96">
+            <div className="relative group">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600" size={18} />
                 <input
                     type="text" placeholder="Search entries..."
@@ -100,16 +97,16 @@ const StudentApplications = () => {
       </div>
 
       {/* --- 2. CONTROLS AREA --- */}
-      <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar shrink-0 px-1">
-         <FilterBtn label="All Applications" active={statusFilter === "ALL"} onClick={() => setStatusFilter("ALL")} />
-         {["APPLIED", "REVIEWING", "ACCEPTED", "REJECTED"].map(s => (
+      <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar shrink-0 px-1 py-1">
+         <FilterBtn label="All" active={statusFilter === "ALL"} onClick={() => setStatusFilter("ALL")} />
+         {["APPLIED", "SELECTED", "REJECTED", "SHORTLISTED"].map(s => (
             <FilterBtn key={s} label={s} active={statusFilter === s} onClick={() => setStatusFilter(s)} />
          ))}
       </div>
 
-      {/* --- 3. SCROLLABLE LIST MODULE --- */}
-      <div className="flex-1 overflow-hidden bg-white border border-slate-200 rounded-[2.5rem] shadow-sm flex flex-col mb-6">
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
+      {/* --- 3. LIST MODULE --- */}
+      <div className="flex-1 lg:overflow-hidden bg-white border border-slate-200 rounded-[2rem] lg:rounded-[2.5rem] shadow-sm flex flex-col mb-8 lg:mb-6">
+        <div className="flex-1 lg:overflow-y-auto custom-scrollbar p-4 lg:p-6 space-y-4">
            <AnimatePresence mode="popLayout">
             {filteredApps.length > 0 ? filteredApps.map((app, index) => (
                 <ApplicationRow 
@@ -121,7 +118,7 @@ const StudentApplications = () => {
             )) : (
                 <div className="h-full flex flex-col items-center justify-center py-20 text-center">
                     <Inbox size={48} className="text-slate-100 mb-4" />
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">No digital logs available for current filter</p>
+                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">No digital logs available</p>
                 </div>
             )}
            </AnimatePresence>
@@ -131,56 +128,54 @@ const StudentApplications = () => {
       {/* --- DETAIL MODAL --- */}
       <AnimatePresence>
         {selectedApp && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedApp(null)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" />
-            <motion.div initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }} className="relative bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col h-[85vh]">
+            <motion.div initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }} className="relative bg-white w-full h-full md:h-[85vh] md:max-w-4xl md:rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col">
               
-              <div className="p-10 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
-                 <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-200 shrink-0">
-                        <ShieldCheck size={32} />
+              <div className="p-6 lg:p-10 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
+                 <div className="flex items-center gap-4 lg:gap-6">
+                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-slate-900 rounded-xl lg:rounded-2xl flex items-center justify-center text-white shrink-0">
+                        <ShieldCheck size={24} className="lg:hidden" />
+                        <ShieldCheck size={32} className="hidden lg:block" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-[1.1] max-w-lg">{selectedApp.internshipId?.title}</h2>
-                        <div className="flex items-center gap-2 mt-2">
+                        <h2 className="text-lg lg:text-2xl font-black text-slate-900 tracking-tighter uppercase leading-[1.1] max-w-[200px] lg:max-w-lg truncate lg:whitespace-normal">{selectedApp.internshipId?.title}</h2>
+                        <div className="flex flex-wrap items-center gap-2 mt-1 lg:mt-2">
                            <StatusBadge status={selectedApp.status} />
-                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Application Record #{selectedApp._id.slice(-6)}</span>
+                           <span className="hidden sm:inline text-[8px] lg:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Record #{selectedApp._id.slice(-6)}</span>
                         </div>
                     </div>
                  </div>
-                 <button onClick={() => setSelectedApp(null)} className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-slate-900 transition-all active:scale-90 shadow-sm"><X size={24} /></button>
+                 <button onClick={() => setSelectedApp(null)} className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400"><X size={20} /></button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-12 space-y-12 custom-scrollbar">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex-1 overflow-y-auto p-6 lg:p-12 space-y-8 lg:space-y-12 custom-scrollbar">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                     <DataModule label="Corporate Partner" value={selectedApp.startupId?.name} icon={Building2} />
-                    <DataModule label="Deployment Mode" value={selectedApp.internshipId?.domain?.replace('_', ' ')} icon={Globe} />
-                    <DataModule label="Logistics Basis" value={selectedApp.internshipId?.location} icon={MapPin} />
-                    <DataModule label="Compensation" value={selectedApp.internshipId?.stipend > 0 ? `₹${selectedApp.internshipId.stipend} Monthly` : "Non-Stipendiary"} icon={Banknote} />
+                    <DataModule label="Deployment" value={selectedApp.internshipId?.domain?.replace('_', ' ')} icon={Globe} />
+                    <DataModule label="Basis" value={selectedApp.internshipId?.location} icon={MapPin} />
+                    <DataModule label="Compensation" value={selectedApp.internshipId?.stipend > 0 ? `₹${selectedApp.internshipId.stipend}` : "Non-Stipendiary"} icon={Banknote} />
                     <DataModule label="Commitment" value={selectedApp.internshipId?.duration} icon={Clock} />
                     <DataModule label="Archive Date" value={new Date(selectedApp.appliedAt).toLocaleDateString()} icon={Calendar} />
                 </div>
 
                 <div className="space-y-4">
                     <div className="flex items-center gap-2 border-l-4 border-indigo-600 pl-4 py-1">
-                        <Info size={16} className="text-slate-400" />
-                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">Internship description</h3>
+                        <Info size={14} className="text-slate-400" />
+                        <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Role Summary</h3>
                     </div>
-                    <p className="text-sm text-slate-500 font-bold leading-relaxed bg-slate-50/50 p-8 rounded-[2rem] border border-slate-100 whitespace-pre-line shadow-inner">{selectedApp.internshipId?.description}</p>
+                    <p className="text-xs lg:text-sm text-slate-500 font-bold leading-relaxed bg-slate-50/50 p-6 lg:p-8 rounded-[1.5rem] lg:rounded-[2rem] border border-slate-100 whitespace-pre-line">{selectedApp.internshipId?.description}</p>
                 </div>
               </div>
 
-              <div className="p-8 border-t border-slate-100 flex items-center justify-between gap-4 bg-white shrink-0">
-                  <div className="  rounded-2xl p-4 flex items-center justify-between">
-                     
-                     <button 
-                        onClick={() => handleDeleteApplication(selectedApp._id)}
-                        className="px-6 py-2.5 bg-white border border-rose-200 text-rose-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all shadow-sm active:scale-95"
-                    >
-                        Withdraw application
-                     </button>
-                  </div>
-                  <button onClick={() => setSelectedApp(null)} className="w-32 py-5 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-indigo-600 transition-all shadow-xl active:scale-95">Dismiss</button>
+              <div className="p-6 lg:p-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white shrink-0">
+                  <button 
+                    onClick={() => handleDeleteApplication(selectedApp._id)}
+                    className="w-full sm:w-auto px-6 py-3 border border-rose-200 text-rose-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all"
+                  >
+                    Withdraw Application
+                  </button>
+                  <button onClick={() => setSelectedApp(null)} className="w-full sm:w-48 py-4 lg:py-5 bg-slate-900 text-white rounded-xl lg:rounded-2xl font-black text-[10px] uppercase tracking-[0.3em]">Dismiss</button>
               </div>
             </motion.div>
           </div>
@@ -190,22 +185,26 @@ const StudentApplications = () => {
   );
 };
 
-/* --- SHARED MODULAR SUB-COMPONENTS --- */
+/* --- SHARED COMPONENTS --- */
 
 const ApplicationRow = ({ app, onView, index }) => (
     <motion.div
         layout
         initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
         transition={{ delay: index * 0.05 }}
-        className="bg-[#FBFBFE] border border-slate-100 p-6 rounded-3xl flex flex-col lg:flex-row items-center justify-between gap-8 transition-all hover:border-slate-200 hover:bg-white group"
+        className="bg-[#FBFBFE] border border-slate-100 p-4 lg:p-6 rounded-2xl lg:rounded-3xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 lg:gap-8 transition-all hover:border-slate-200 group"
     >
-        <div className="flex items-center gap-6 flex-1 w-full min-w-0">
-            <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-300 shadow-sm shrink-0 group-hover:text-indigo-600 transition-colors">
-                <Building2 size={28} />
+        <div className="flex items-center gap-4 lg:gap-6 flex-1 w-full min-w-0">
+            <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-300 shrink-0 group-hover:text-indigo-600 transition-colors">
+                <Building2 size={24} />
             </div>
             <div className="min-w-0 flex-1">
-                <h3 className="text-lg font-black text-slate-900 tracking-tight leading-tight uppercase truncate">{app.internshipId?.title || "Unknown Position"}</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-1">{app.startupId?.name || "Corporate Partner"}</p>
+                <h3 className="text-md lg:text-lg font-black text-slate-900 tracking-tight leading-tight uppercase truncate">{app.internshipId?.title || "Unknown Position"}</h3>
+                <p className="text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-1 truncate">{app.startupId?.name}</p>
+            </div>
+            {/* Mobile Status Badge - Only visible on small screens */}
+            <div className="lg:hidden shrink-0">
+                <StatusBadge status={app.status} isSmall />
             </div>
         </div>
 
@@ -217,9 +216,13 @@ const ApplicationRow = ({ app, onView, index }) => (
             <StatusBadge status={app.status} />
         </div>
 
-        <div className="flex items-center gap-3 w-full lg:w-auto shrink-0">
-            <button onClick={onView} className="flex-1 lg:flex-none px-8 py-3 bg-slate-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg active:scale-95">
-                Details
+        <div className="flex items-center gap-3 w-full lg:w-auto shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-50">
+            <div className="flex-1 lg:hidden text-left">
+                 <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Entry Date</p>
+                 <p className="text-[10px] font-bold text-slate-700">{new Date(app.appliedAt).toLocaleDateString()}</p>
+            </div>
+            <button onClick={onView} className="px-8 py-3 bg-slate-950 text-white rounded-xl text-[9px] lg:text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 shadow-lg active:scale-95">
+                Full Details
             </button>
         </div>
     </motion.div>
@@ -228,8 +231,8 @@ const ApplicationRow = ({ app, onView, index }) => (
 const FilterBtn = ({ label, active, onClick }) => (
   <button 
     onClick={onClick} 
-    className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] border transition-all ${
-        active ? 'bg-slate-900 text-white border-slate-900 shadow-md shadow-slate-200 scale-105' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-400'
+    className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl text-[8px] lg:text-[10px] font-black uppercase tracking-[0.15em] border transition-all whitespace-nowrap ${
+        active ? 'bg-slate-900 text-white border-slate-900 shadow-md' : 'bg-white text-slate-400 border-slate-200'
     }`}
   >
     {label}
@@ -247,22 +250,26 @@ const DataModule = ({ label, value, icon: Icon }) => (
   <div className="space-y-1.5">
     <div className="flex items-center gap-2 text-slate-300 ml-1">
         <Icon size={12} />
-        <p className="text-[9px] font-black uppercase tracking-widest leading-none">{label}</p>
+        <p className="text-[8px] lg:text-[9px] font-black uppercase tracking-widest leading-none">{label}</p>
     </div>
-    <div className="bg-slate-50 border border-slate-100 p-4 rounded-[1.5rem] flex items-center justify-center text-center">
-      <span className="text-xs font-bold text-slate-800 uppercase tracking-tight truncate">{value || 'Not Defined'}</span>
+    <div className="bg-slate-50 border border-slate-100 p-3 lg:p-4 rounded-xl lg:rounded-[1.5rem] flex items-center justify-center text-center">
+      <span className="text-[10px] lg:text-xs font-bold text-slate-800 uppercase tracking-tight truncate">{value || 'N/A'}</span>
     </div>
   </div>
 );
 
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({ status, isSmall }) => {
     const config = {
         ACCEPTED: "text-emerald-600 bg-emerald-50 border-emerald-100",
         REJECTED: "text-rose-600 bg-rose-50 border-rose-100",
         SHORTLISTED: "text-indigo-600 bg-indigo-50 border-indigo-100",
         default: "text-amber-600 bg-amber-50 border-amber-100"
     };
-    return <span className={`px-4 py-2 rounded-xl border text-[9px] font-black uppercase tracking-widest ${config[status] || config.default}`}>{status}</span>;
+    return (
+        <span className={`${isSmall ? 'px-2 py-1 text-[7px]' : 'px-4 py-2 text-[9px]'} rounded-xl border font-black uppercase tracking-widest ${config[status] || config.default}`}>
+            {status}
+        </span>
+    );
 };
 
 export default StudentApplications;

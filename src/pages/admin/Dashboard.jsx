@@ -134,7 +134,7 @@ const Dashboard = () => {
     );
 
     return (
-        <div className="space-y-8 animate-fade-in bg-[#F6F2ED] p-8 min-h-screen font-sans">
+        <div className="space-y-8 animate-fade-in bg-white p-8 min-h-screen font-sans">
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -122,7 +122,7 @@ const ManageStartups = () => {
     );
 
     return (
-        <div className="space-y-6 bg-[#F6F2ED] p-8 min-h-screen font-sans">
+        <div className="space-y-6 bg-white p-8 min-h-screen font-sans">
             
             {/* --- HEADER ACTIONS --- */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -275,7 +275,7 @@ const ManageStartups = () => {
                                             <div>
                                                 <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter leading-none mb-3 italic-none">{viewData.companyName}</h2>
                                                 <div className="flex items-center gap-3">
-                                                    <span className="bg-[#F36B7F] text-white text-[9px] font-black px-3 py-1.5 rounded-lg uppercase tracking-[0.15em] shadow-lg shadow-rose-100">Verified Partner</span>
+                                                    {/* <span className="bg-[#F36B7F] text-white text-[9px] font-black px-3 py-1.5 rounded-lg uppercase tracking-[0.15em] shadow-lg shadow-rose-100">Verified Partner</span> */}
                                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none border-l border-slate-200 pl-3">Phase: {viewData.yearFounded || 'Active'}</span>
                                                 </div>
                                             </div>

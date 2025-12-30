@@ -71,7 +71,7 @@ const ManageInternships = () => {
     );
 
     return (
-        <div className="space-y-6 animate-fade-in bg-[#F6F2ED] p-8 min-h-screen font-sans text-gray-900">
+        <div className="space-y-6 animate-fade-in bg-white p-8 min-h-screen font-sans text-gray-900">
             
             {/* --- FILTER BAR --- */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E2DB] flex flex-col lg:flex-row gap-6 justify-between items-center">
@@ -97,8 +97,8 @@ const ManageInternships = () => {
                             className="appearance-none pl-10 pr-10 py-2.5 bg-[#F6F2ED] border border-[#E7E2DB] rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-600 focus:outline-none focus:border-[#F36B7F] transition-all cursor-pointer"
                         >
                             <option value="ALL">All Visibility</option>
-                            <option value="OPEN">Open / Active</option>
-                            <option value="CLOSED">Closed / Inactive</option>
+                            <option value="OPEN">Active</option>
+                            <option value="CLOSED">Inactive</option>
                         </select>
                         <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#F36B7F]" />
                     </div>
@@ -167,7 +167,7 @@ const ManageInternships = () => {
                                     onClick={() => setSelectedInternship(item)}
                                     className="flex-1 bg-[#F6F2ED] text-gray-700 border border-[#E7E2DB] py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#F36B7F] hover:text-white hover:border-[#F36B7F] transition-all flex items-center justify-center gap-2"
                                 >
-                                    <Eye size={14} /> Full Record
+                                    <Eye size={14} /> View details
                                 </button>
                                 <button 
                                     onClick={() => handleDelete(item._id)}
