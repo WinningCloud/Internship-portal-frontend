@@ -1,317 +1,321 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import cresLogo from '../../assets/cres.png'
+import { motion, useScroll, useTransform } from 'framer-motion';
+import * as THREE from 'three';
+import ciscLogo from '/ciscLogo.jpg';
 import { 
   Rocket, GraduationCap, Building2, ShieldCheck, 
-  ArrowRight, Globe, Zap, Users, TrendingUp,
-  Target, Award, BadgeCheck, Star, ArrowUpRight, 
-  Linkedin, Facebook, Instagram, Twitter
+  ArrowRight, BadgeCheck, Star, ArrowUpRight, 
+  ChevronRight, Sparkles
 } from 'lucide-react';
+import LandingPageFooter from './LandingPageFooter';
 
-const FADE_UP = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6 }
-};
+// // --- VISIBLE THREE.JS BACKGROUND ---
+// const ThreeDBackground = () => {
+//   const mountRef = useRef(null);
+
+//   useEffect(() => {
+//     let frameId;
+//     const scene = new THREE.Scene();
+//     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+//     // Antialias for smoothness
+//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+//     renderer.setSize(window.innerWidth, window.innerHeight);
+//     renderer.setPixelRatio(window.devicePixelRatio);
+//     mountRef.current.appendChild(renderer.domElement);
+
+//     // 1. DYNAMIC PARTICLES (The Constellation)
+//     const particlesCount = 400; // Fewer but larger/brighter
+//     const particlesGeo = new THREE.BufferGeometry();
+//     const posArray = new Float32Array(particlesCount * 3);
+    
+//     for (let i = 0; i < particlesCount * 3; i++) {
+//       posArray[i] = (Math.random() - 0.5) * 8;
+//     }
+//     particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+//     const particlesMaterial = new THREE.PointsMaterial({
+//       size: 0.015,
+//       color: '#3b82f6', // Bright Blue
+//       transparent: true,
+//       opacity: 0.6,
+//     });
+
+//     const starField = new THREE.Points(particlesGeo, particlesMaterial);
+//     scene.add(starField);
+
+//     // 2. GEOMETRIC SHARDS (Floating 3D Objects)
+//     const group = new THREE.Group();
+//     const geometry = new THREE.IcosahedronGeometry(0.2, 0); // Geometric Shard
+//     const material = new THREE.MeshPhongMaterial({
+//       color: '#2563eb',
+//       wireframe: true,
+//       transparent: true,
+//       opacity: 0.2
+//     });
+
+//     for (let i = 0; i < 15; i++) {
+//       const shard = new THREE.Mesh(geometry, material);
+//       shard.position.set(
+//         (Math.random() - 0.5) * 6,
+//         (Math.random() - 0.5) * 6,
+//         (Math.random() - 0.5) * 4
+//       );
+//       shard.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+//       group.add(shard);
+//     }
+//     scene.add(group);
+
+//     // 3. LIGHTING (Crucial for 3D visibility)
+//     const light = new THREE.DirectionalLight(0xffffff, 1);
+//     light.position.set(1, 1, 2);
+//     scene.add(light);
+//     scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+//     camera.position.z = 3;
+
+//     let mouseX = 0;
+//     let mouseY = 0;
+//     const handleMouseMove = (e) => {
+//       mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+//       mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+//     };
+//     window.addEventListener('mousemove', handleMouseMove);
+
+//     const animate = () => {
+//       frameId = requestAnimationFrame(animate);
+      
+//       // Auto rotations
+//       starField.rotation.y += 0.001;
+//       group.rotation.x += 0.002;
+//       group.rotation.y += 0.001;
+
+//       // Mouse Lag Effect
+//       starField.position.x += (mouseX - starField.position.x) * 0.05;
+//       starField.position.y += (-mouseY - starField.position.y) * 0.05;
+//       group.position.x += (mouseX - group.position.x) * 0.02;
+
+//       renderer.render(scene, camera);
+//     };
+
+//     const handleResize = () => {
+//       camera.aspect = window.innerWidth / window.innerHeight;
+//       camera.updateProjectionMatrix();
+//       renderer.setSize(window.innerWidth, window.innerHeight);
+//     };
+//     window.addEventListener('resize', handleResize);
+
+//     animate();
+
+//     return () => {
+//       window.removeEventListener('resize', handleResize);
+//       window.removeEventListener('mousemove', handleMouseMove);
+//       cancelAnimationFrame(frameId);
+//       if (mountRef.current) mountRef.current.removeChild(renderer.domElement);
+//     };
+//   }, []);
+
+//   return (
+//     <div className="fixed inset-0 -z-10 bg-[#FBFBFE]">
+//       {/* The 3D Canvas */}
+//       <div ref={mountRef} className="absolute inset-0" />
+      
+//       {/* Subtle Blue Gradient to ground the scene */}
+//       <div className="absolute inset-0 bg-gradient-to-b from-blue-50/20 via-transparent to-white pointer-events-none" />
+//     </div>
+//   );
+// };
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-100">
+    <div className="min-h-screen text-slate-900 font-sans selection:bg-blue-600 selection:text-white">
+      {/* <ThreeDBackground /> */}
       
-      {/* --- 1. COMMAND CENTER NAVIGATION --- */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-20 flex items-center px-4 md:px-8">
-        <div className="w-full max-w-[1600px] mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-10">
-           <div className="flex items-center gap-3">
-  {/* The Logo Box - Styled as a sharp, modular component */}
-  <div className="w-11 h-11 bg-white border border-slate-200 rounded-xl flex items-center justify-center shadow-sm overflow-hidden p-1.0 group-hover:border-blue-600 transition-colors duration-300">
-    <img 
-      src={cresLogo} 
-      alt="CIIC Logo" 
-      className="w-full h-full object-contain" 
-    />
-  </div>
-
-  {/* Brand Typography */}
-  <div className="flex flex-col leading-none">
-    <span className="text-xl font-black tracking-tighter uppercase text-slate-900">
-      CIIC <span className="text-blue-600">Portal</span>
-    </span>
-    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-      Internship Portal
-    </span>
-  </div>
-</div>
-            
-            <div className="hidden xl:flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-slate-400">
-              <a href="#stats" className="hover:text-blue-600 transition-all">Impact</a>
-              <a href="#pathways" className="hover:text-blue-600 transition-all">Destinations</a>
-              <a href="#milestones" className="hover:text-blue-600 transition-all">Roadmap</a>
+      {/* --- NAV BAR --- */}
+      <nav className="fixed top-0 w-full z-50 px-6 py-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.05)] rounded-2xl px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-8">
+              <Link to="/" className="flex items-center gap-3 group">
+                {/* <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-500 shadow-lg shadow-slate-200"> */}
+                  <img src={ciscLogo} alt="CISC Logo" className="w-9 h-9 object-contain" />
+                {/* </div> */}
+                <div className="flex flex-col">
+                  <span className="text-lg font-black tracking-tighter uppercase leading-none">CISC <span className="text-blue-600">Portal</span></span>
+                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Startup & Innovation Hub</span>
+                </div>
+              </Link>
+              
+              <div className="hidden md:flex items-center gap-6">
+                {['Impact', 'Pathways', 'Milestones'].map((item) => (
+                  <a key={item} href={`#${item.toLowerCase()}`} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
+                    {item}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-             <button 
-              onClick={() => navigate('/login/admin')}
-              className="hidden lg:flex px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all"
-             >
-               Admin
-             </button>
-             <button 
-               onClick={() => document.getElementById('pathways').scrollIntoView({ behavior: 'smooth' })}
-               className="bg-slate-950 text-white px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 shadow-2xl transition-all active:scale-95"
-             >
-               Login
-             </button>
+            <div className="flex items-center gap-3">
+              <button onClick={() => navigate('/login/admin')} className="hidden sm:block px-5 py-2 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50 rounded-lg transition-all">
+                Admin
+              </button>
+              <button 
+                onClick={() => document.getElementById('pathways').scrollIntoView({ behavior: 'smooth' })}
+                className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 shadow-xl shadow-blue-500/10 transition-all active:scale-95"
+              >
+                Get Started
+              </button>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* --- 2. THE VISIONARY HERO --- */}
-      <section className="pt-48 pb-24 overflow-hidden relative px-6 md:px-8">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.04)_0%,transparent_60%)] -z-10" />
-        
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
-          <motion.div {...FADE_UP} className="lg:col-span-7">
-            {/* <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-950 text-white rounded-lg text-[9px] font-black uppercase tracking-[0.25em] mb-10 shadow-xl">
-              <BadgeCheck size={14} className="text-blue-400" /> Vetted Incubator Hub
-            </div> */}
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 leading-[0.9] uppercase mb-10">
-              Talent Meets <br />
-              <span className="text-blue-600">Enterprise.</span>
-            </h1>
-            <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mb-12">
-              Accelerate your industry presence with the official Crescent Internship Engine. 
-              Connecting verified candidates to 100+ top-tier incubated startups.
+      {/* --- HERO SECTION --- */}
+      <section className="relative pt-44 pb-32 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-[10px] font-black text-blue-600 uppercase tracking-widest mb-8">
+                <Sparkles size={12} /> Innovate Today, Lead Tomorrow
+              </div>
+              <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 leading-[0.85] uppercase mb-8">
+                Build the <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Future.</span>
+              </h1>
+              <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-xl mb-10">
+                The official **Crescent Innovation and Startup Club** engine. Connecting ambitious builders to elite startup opportunities.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <button onClick={() => navigate('/login/student')} className="group w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-3">
+                  Find Internships <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+                <button onClick={() => navigate('/login/startup')} className="w-full sm:w-auto px-8 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:border-blue-600 hover:text-blue-600 transition-all flex items-center justify-center">
+                  Hire Builders
+                </button>
+              </div>
+            </motion.div>
+
+            <motion.div style={{ y: y1 }} className="relative hidden lg:block">
+              <div className="relative z-10 bg-white/40 backdrop-blur-3xl border border-white/60 p-2 rounded-[3rem] shadow-2xl">
+                <img src="https://illustrations.popsy.co/white/product-launch.svg" alt="Launch Illustration" className="w-full h-auto drop-shadow-2xl" />
+                <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className="absolute -top-6 -right-6 bg-white border border-slate-100 p-6 rounded-3xl shadow-xl flex items-center gap-4">
+                  <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                    <BadgeCheck size={28} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">CISC Verified</p>
+                    <p className="text-sm font-bold text-slate-900 uppercase">Top Talent</p>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- STATS SECTION --- */}
+      <section id="impact" className="py-12 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-slate-900 rounded-[2.5rem] p-12 md:p-16 relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_rgba(37,99,235,0.2)_0%,transparent_50%)]"></div>
+            <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+              <StatItem value="2.5k+" label="Active Builders" />
+              <StatItem value="150+" label="Partner Startups" />
+              <StatItem value="85%" label="Placement Rate" />
+              <StatItem value="₹40Cr+" label="Founder Funding" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- PATHWAY SELECTION --- */}
+      <section id="pathways" className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20 space-y-4">
+            <h2 className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em]">Ecosystem Access</h2>
+            <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase leading-none">Pick Your Journey</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <BentoCard icon={GraduationCap} title="Students" desc="Access high-growth startup roles and build your professional proof-of-work." btn="Student Portal" onClick={() => navigate('/login/student')} theme="blue" />
+            <BentoCard icon={Building2} title="Founders" desc="Scale your team with vetted talent from Crescent's most innovative minds." btn="Founder Portal" onClick={() => navigate('/login/startup')} theme="dark" />
+            <BentoCard icon={ShieldCheck} title="Moderators" desc="Oversee the ecosystem, verify listings, and ensure institutional excellence." btn="Admin Access" onClick={() => navigate('/login/admin')} theme="white" />
+          </div>
+        </div>
+      </section>
+
+      {/* --- MILESTONES --- */}
+      <section id="milestones" className="py-32 px-6">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-20">
+          <div className="lg:col-span-5 space-y-8">
+            <div className="w-16 h-1 bg-blue-600"></div>
+            <h3 className="text-5xl font-black text-slate-900 tracking-tighter uppercase leading-none">Driving <br /> Innovation.</h3>
+            <p className="text-slate-500 font-medium text-lg leading-relaxed">
+              CISC is an accelerator for your career. We track every success to build a legacy of student entrepreneurship.
             </p>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <button 
-                onClick={() => navigate('/login/student')}
-                className="w-full sm:w-auto px-10 py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.25em] shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all flex justify-center items-center gap-2 active:scale-95"
-              >
-                Secure Internship <ArrowUpRight size={18} />
-              </button>
-              <Link 
-                to="/login/startup"
-                className="w-full sm:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-50 transition-all flex justify-center items-center"
-              >
-                Hire talent
-              </Link>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="lg:col-span-5 hidden lg:block"
-          >
-             <div className="relative p-4 bg-slate-50 rounded-[3rem] border border-slate-100 shadow-inner group">
-                <img 
-                  src="https://illustrations.popsy.co/white/remote-work.svg" 
-                  alt="System Illustration" 
-                  className="w-full transition-transform duration-700 group-hover:scale-[1.02] group-hover:-rotate-1"
-                />
-                <div className="absolute top-8 right-8 bg-white border border-slate-200 p-4 rounded-3xl shadow-xl flex items-center gap-3">
-                   <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><Star fill="currentColor" size={16} /></div>
-                   <p className="text-[10px] font-black uppercase text-slate-400 leading-tight tracking-widest">CIIC <br /><span className="text-slate-900">Verified companies</span></p>
+            <div className="pt-4 flex items-center gap-4">
+                <div className="flex -space-x-3">
+                    {[1,2,3,4].map(i => <img key={i} className="w-10 h-10 rounded-full border-2 border-white" src={`https://i.pravatar.cc/100?img=${i+20}`} alt="user" />)}
                 </div>
-             </div>
-          </motion.div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Joined by 400+ builders</p>
+            </div>
+          </div>
+          <div className="lg:col-span-7 space-y-4">
+            <MilestoneRow date="2025 Q1" title="Global Networking" desc="Connected CISC members with mentors from Silicon Valley." />
+            <MilestoneRow date="2024 Q4" title="Incubation Drive" desc="12 student startups received pre-seed support from CIIC." />
+            <MilestoneRow date="2024 Q3" title="Portal Launch" desc="Centralized the internship process for the entire university." />
+          </div>
         </div>
       </section>
 
-      {/* --- 3. DYNAMIC ANALYTICS STRIP --- */}
-      <section id="stats" className="bg-[#020617] py-20 px-8">
-        <div className="max-w-[1500px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center border-x border-white/5">
-          <StatBox label="Live Applications" value="1,402" />
-          <StatBox label="Vetted Partnerships" value="142" />
-          <StatBox label="Talent Pool" value="6,800+" />
-          <StatBox label="Certificates Issued" value="1.2K" />
-        </div>
-      </section>
-
-      {/* --- 4. PATHWAY SELECTION --- */}
-      <section id="pathways" className="py-32 px-6 bg-slate-50/50 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto flex flex-col items-center text-center mb-24">
-            <h2 className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] mb-4">GET STARTED</h2>
-            <h3 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tighter uppercase leading-none">Access The Portal</h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-[1400px] mx-auto">
-          <ModuleCard 
-            icon={GraduationCap} title="STUDENTS" 
-            desc="Explore high-growth tracks, maintain your professional profile and claim verified industry opportunities."
-            btn="Student Login" link="/login/student" color="blue"
-          />
-          <ModuleCard 
-            icon={Building2} title="Founders" 
-            desc="Publish roles, monitor applicants and secure top crescentian's talent with zero overhead."
-            btn="Startup Login" link="/login/startup" color="indigo"
-          />
-          <ModuleCard 
-            icon={ShieldCheck} title="Admin" 
-            desc="Maintain institutional integrity, oversight recruitment stats and regulate startups."
-            btn="Admin Login" link="/login/admin" color="slate"
-          />
-        </div>
-      </section>
-
-      {/* --- 5. IMPACT & MILESTONES (NEW REPLACED SECTION) --- */}
-      <section id="milestones" className="py-32 px-8 bg-white overflow-hidden relative">
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div className="space-y-12">
-                <div className="space-y-4">
-                    <h2 className="text-[11px] font-black text-blue-600 uppercase tracking-[0.4em] border-l-4 border-blue-600 pl-4 py-1">Recent Milestones</h2>
-                    <h3 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tighter leading-none uppercase">Success Recorded <br /> in Every Batch.</h3>
-                </div>
-
-                <div className="grid gap-6">
-                    <MilestoneItem date="Jan 2025" title="Spring Enrollment Launch" body="Surpassed 6000 student enrollments with an automated matching rate of 88%." />
-                    <MilestoneItem date="Dec 2024" title="Strategic Funding Circle" body="Incubated startups collectively raised ₹25Cr+, increasing high-stipend internship capacity." />
-                    <MilestoneItem date="Oct 2024" title="Excellence Recognition" body="Ranked in top innovation hubs for institutional recruitment frameworks." />
-                </div>
-            </div>
-
-            <div className="relative bg-slate-950 p-10 md:p-20 rounded-[4rem] text-white shadow-[0_20px_60px_rgba(37,99,235,0.1)]">
-                <Globe className="absolute top-0 right-0 p-12 text-blue-600 opacity-5" size={340} strokeWidth={1}/>
-                <Star className="text-blue-500 mb-8" size={48} fill="currentColor" />
-                <p className="text-2xl md:text-3xl font-bold leading-relaxed mb-12 italic uppercase italic-off tracking-tight">
-                  "The CIIC Portal transformed how our startup sources talent. We went from posting a role to a verified hire within 48 hours."
-                </p>
-                <div className="flex items-center gap-4 border-t border-white/10 pt-10">
-                   <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-slate-900 font-black italic italic-off">FN</div>
-                   <div>
-                     <p className="text-xs font-black uppercase tracking-widest text-white">Farhan Tech</p>
-                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Founder @ CEO</p>
-                   </div>
-                </div>
-            </div>
-        </div>
-      </section>
-
-      {/* --- 6. REDESIGNED PROFESSIONAL FOOTER --- */}
-    <footer className="border-t border-slate-100 bg-[#FBFBFE] py-24 px-8 overflow-hidden relative">
-    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24 relative z-10">
-        
-        {/* Brand Section */}
-        <div className="lg:col-span-5 space-y-8">
-            <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                    <Rocket className="text-blue-600" size={32} />
-                    <h4 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none">CIIC</h4>
-                </div>
-                <p className="text-sm text-slate-500 font-bold leading-relaxed max-w-sm">
-                    Providing a high-density professional environment for the next generation of engineers and entrepreneurs at Crescent University.
-                </p>
-            </div>
-            <div className="flex items-center gap-3">
-                <SocialCircle icon={Linkedin} href="https://www.linkedin.com/company/ciicofficial" />
-                <SocialCircle icon={Instagram} href="https://www.instagram.com/ciicupdates" />
-                <SocialCircle icon={Twitter} href="https://x.com/ciicupdates" />
-            </div>
-        </div>
-
-        {/* Location Section - Fills the "Empty" space professionally */}
-        <div className="lg:col-span-4 space-y-6">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Headquarters</p>
-            <div className="space-y-4">
-                <div className="space-y-1">
-                    <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Crescent University Campus</p>
-                    <p className="text-[11px] font-bold text-slate-500 uppercase leading-loose tracking-wider">
-                        GST Road, Vandalur, Chennai <br />
-                        Tamil Nadu, India - 600048
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Operations: Mon - Sat / 09:00 - 18:00</p>
-                </div>
-            </div>
-        </div>
-
-        {/* Action Card */}
-        <div className="lg:col-span-3 bg-white border border-slate-200 rounded-[2.5rem] p-8 text-center flex flex-col justify-center gap-4 shadow-sm">
-            <p className="text-sm font-black text-slate-900 uppercase leading-tight">Need assistance <br /> in registration?</p>
-            <a href="mailto:support@ciic.res.in" className="bg-slate-900 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all">Support Desk</a>
-        </div>
-    </div>
-
-    {/* Bottom Bar */}
-    <div className="max-w-7xl mx-auto pt-8 border-t border-slate-200/50 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] relative z-10">
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-            <p>© 2025 Crescent Innovation & Incubation Council</p>
-            <div className="hidden md:block w-px h-3 bg-slate-200"></div>
-            <p className="text-slate-300">ISO 9001:2015 Certified</p>
-        </div>
-        <p className="flex items-center gap-2 text-blue-600/60">
-            <span className="w-1 h-1 rounded-full bg-blue-600"></span>
-            Professional Deployment Mode
-        </p>
-    </div>
-</footer>
+      <LandingPageFooter />
     </div>
   );
 };
 
-/* --- SHARED MODULAR BLOCKS --- */
+/* --- SHARED COMPONENTS --- */
 
-const StatBox = ({ label, value }) => (
-  <div className="space-y-2 border-r last:border-0 border-white/5 py-4">
-    <h4 className="text-3xl md:text-5xl font-black text-white italic-off tracking-tighter">{value}</h4>
-    <p className="text-[9px] font-bold text-blue-500/60 uppercase tracking-[0.2em] italic-off">{label}</p>
+const StatItem = ({ value, label }) => (
+  <div>
+    <h4 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-2">{value}</h4>
+    <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">{label}</p>
   </div>
 );
 
-const ModuleCard = ({ icon: Icon, title, highlight, desc, btn, link, color }) => {
-    const navigate = useNavigate();
-    const colors = { blue: "hover:border-blue-500 group-hover:text-blue-600", indigo: "hover:border-indigo-600 group-hover:text-indigo-600", slate: "hover:border-slate-900 group-hover:text-slate-900" };
-    return (
-        <div className="bg-white border border-slate-200 p-8 md:p-10 rounded-[3rem] text-center flex flex-col h-full group hover:shadow-2xl transition-all duration-500 overflow-hidden relative border-b-8 border-b-slate-100">
-            <div className="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center mb-8 mx-auto group-hover:bg-blue-600 group-hover:rotate-12 transition-all duration-500 shadow-xl shadow-slate-100">
-               <Icon size={24} />
-            </div>
-            <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-2 leading-none">{highlight}</p>
-            <h4 className="text-xl font-bold text-slate-900 uppercase tracking-tight italic-off mb-6 leading-none">{title}</h4>
-            <p className="text-sm text-slate-400 font-bold leading-relaxed mb-10 flex-grow uppercase italic-off px-4">{desc}</p>
-            <button 
-                onClick={() => navigate(link)}
-                className="w-full py-4 bg-slate-50 border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-md active:scale-95"
-            >
-                {btn}
-            </button>
-        </div>
-    );
+const BentoCard = ({ icon: Icon, title, desc, btn, onClick, theme }) => {
+  const themes = {
+    blue: "bg-blue-600 text-white shadow-blue-200",
+    dark: "bg-slate-900 text-white shadow-slate-200",
+    white: "bg-white text-slate-900 border border-slate-100 shadow-xl"
+  };
+  return (
+    <motion.div whileHover={{ y: -10 }} className={`${themes[theme]} p-10 rounded-[2.5rem] flex flex-col h-full shadow-2xl group transition-all`}>
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-10 ${theme === 'white' ? 'bg-slate-900 text-white' : 'bg-white/20 text-white'}`}>
+        <Icon size={28} />
+      </div>
+      <h4 className="text-2xl font-black uppercase tracking-tight mb-4">{title}</h4>
+      <p className={`text-sm font-medium leading-relaxed mb-12 ${theme === 'white' ? 'text-slate-500' : 'opacity-80'}`}>{desc}</p>
+      <button onClick={onClick} className={`mt-auto w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 ${theme === 'white' ? 'bg-slate-900 text-white hover:bg-blue-600' : 'bg-white text-slate-900 hover:bg-slate-100'}`}>
+        {btn} <ChevronRight size={14} />
+      </button>
+    </motion.div>
+  );
 };
 
-const MilestoneItem = ({ date, title, body }) => (
-    <div className="flex gap-6 items-start group">
-        <div className="text-[10px] font-black text-slate-400 bg-slate-50 px-3 py-1.5 rounded uppercase tracking-widest w-28 text-center shrink-0 border border-slate-100 shadow-sm">{date}</div>
-        <div className="space-y-1">
-            <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest group-hover:text-blue-600 transition-colors">{title}</h4>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-tight">{body}</p>
-        </div>
+const MilestoneRow = ({ date, title, desc }) => (
+  <div className="group flex items-center gap-8 p-6 rounded-3xl hover:bg-white transition-all duration-300 border border-transparent hover:border-slate-100">
+    <div className="text-[10px] font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-lg uppercase tracking-widest whitespace-nowrap">{date}</div>
+    <div>
+      <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest group-hover:text-blue-600 transition-colors">{title}</h4>
+      <p className="text-xs font-bold text-slate-400 uppercase mt-1">{desc}</p>
     </div>
-);
-
-const SocialCircle = ({ icon: Icon, href = "#" }) => (
-  <motion.a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    whileHover={{ y: -4, scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 
-               hover:text-blue-600 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/10 
-               transition-colors duration-300 group cursor-pointer"
-  >
-    <Icon size={18} className="group-hover:rotate-[8deg] transition-transform duration-300" />
-  </motion.a>
+    <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"><ArrowUpRight className="text-slate-300" size={20} /></div>
+  </div>
 );
 
 export default LandingPage;

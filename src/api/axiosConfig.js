@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL:  'https://internship-portal-backend-h46h.onrender.com/api',
-});
+}); 
 
 // Automatically add JWT to every request
 api.interceptors.request.use((config) => {

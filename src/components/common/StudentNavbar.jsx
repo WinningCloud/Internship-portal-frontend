@@ -11,6 +11,8 @@ import {
 import { AuthContext } from '../../context/AuthContext';
 import api from '../../api/axiosConfig';
 import cresLogo from '../../assets/cres.png';
+// import from public folder
+import ciscLogo from '/ciscLogo.jpg';
 
 const StudentNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -67,7 +69,7 @@ const StudentNavbar = () => {
           <div className="flex items-center space-x-10 shrink-0">
             <Link to="/student/dashboard" className="flex items-center space-x-3 group">
               <div className="w-12 h-12 bg-white border border-slate-200 rounded-xl flex items-center justify-center p-1.5 shadow-sm group-hover:border-indigo-600 transition-all duration-300 transform group-hover:rotate-3">
-                <img src={cresLogo} alt="Logo" className="w-full h-full object-contain" />
+                <img src={ciscLogo} alt="Logo" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-xl font-black text-slate-900 tracking-tighter uppercase">
